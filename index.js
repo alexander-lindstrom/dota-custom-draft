@@ -1,15 +1,31 @@
+
+/*
 const app = require('express')();
 const http = require('http').Server(app);
+const io = require('socket.io')(http);
+*/
+
+const express = require('express');
+const app = express();
+const http = require('http').Server(app);
+const io = require('socket.io')(http);
+
+
+const port = process.env.PORT || 3000;
 const csv = require('jquery-csv');
 const fs = require('fs');
-const io = require('socket.io')(http);
-const port = process.env.PORT || 3000;
 
+//Todo: 
+//Add timer
 //If the time runs out a hero is randomly selected and the change of state propagated to users.
 
+app.use(express.static(__dirname + '/public'));
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/index.html');
 });
+
+console.log("__dirname:    ", __dirname);
+
 
 io.on('connection', (socket) => {
   socket.on('start', ()  => {
@@ -29,7 +45,7 @@ function selectHeroes(numPerType){
 }
 
 function selectHeroesOfType(type, numPerType){
-	const path = 'data/heroes/' + type + '.csv';
+	const path = 'public/heroes/' + type + '.csv';
 	const csv = fs.readFileSync(path).toString().trim().replace(/\s+/g, '');
 	var arr = csv.split(',');
 	return getRandom(arr, numPerType)
@@ -48,8 +64,6 @@ function getRandom(arr, n) {
     }
     return result;
 }
-
-
 
 http.listen(port, () => {
   console.log(`Socket.IO server running at http://localhost:${port}/`);

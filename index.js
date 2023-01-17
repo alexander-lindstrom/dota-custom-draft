@@ -1,6 +1,3 @@
-
-
-
 const express = require('express');
 const app = express();
 const http = require('http').Server(app);
@@ -10,7 +7,7 @@ const path = require('path');
 const port = process.env.PORT || 3000;
 const csv = require('jquery-csv');
 const fs = require('fs');
-const dir = path.join(__dirname, 'public');
+const dir = 'public';
 app.use(express.static(dir));
 
 app.get('/', (req, res) => {

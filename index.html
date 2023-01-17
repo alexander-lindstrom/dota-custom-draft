@@ -50,7 +50,8 @@
 		
 			strHeroes.forEach(function(e){
 				var elem = document.createElement("img");
-				elem.src = 'data/heroes/img/' + e + '.webdp';
+				
+				elem.src = 'http://ec2-54-244-133-92.us-west-2.compute.amazonaws.com:3000/#data/heroes/img/' + e + '.webdp';
 				document.getElementById("str").appendChild(elem);
 			});
 			agiHeroes.forEach(function(e){
@@ -61,7 +62,7 @@
 			intHeroes.forEach(function(e){
 				var elem = document.createElement("img");
 				elem.src = 'data/heroes/img/' + e + '.webdp';
-				document.getElementById("agi").appendChild(elem);
+				document.getElementById("int").appendChild(elem);
 			});
 		}
 

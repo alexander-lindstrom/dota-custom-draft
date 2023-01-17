@@ -19,7 +19,7 @@ const fs = require('fs');
 //Add timer
 //If the time runs out a hero is randomly selected and the change of state propagated to users.
 
-app.use(express.static(__dirname + '/public'));
+app.use(express.static('/public'));
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/index.html');
 });

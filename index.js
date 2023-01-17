@@ -1,31 +1,21 @@
 
-/*
-const app = require('express')();
-const http = require('http').Server(app);
-const io = require('socket.io')(http);
-*/
+
 
 const express = require('express');
 const app = express();
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
-
+const path = require('path');
 
 const port = process.env.PORT || 3000;
 const csv = require('jquery-csv');
 const fs = require('fs');
+const dir = path.join(__dirname, 'public');
+app.use(express.static(dir));
 
-//Todo: 
-//Add timer
-//If the time runs out a hero is randomly selected and the change of state propagated to users.
-
-app.use(express.static('/public'));
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/index.html');
 });
-
-console.log("__dirname:    ", __dirname);
-
 
 io.on('connection', (socket) => {
   socket.on('start', ()  => {
@@ -34,6 +24,10 @@ io.on('connection', (socket) => {
   });
 });
 
+//Todo: 
+//Add timer
+//If the time runs out a hero is randomly selected and the change of state propagated to users.
+
 function selectHeroes(numPerType){
 
 	strHeroes = selectHeroesOfType('strength', numPerType);
@@ -41,7 +35,6 @@ function selectHeroes(numPerType){
 	intHeroes = selectHeroesOfType('intelligence', numPerType);
 	
 	return [strHeroes, agiHeroes, intHeroes]
-	
 }
 
 function selectHeroesOfType(type, numPerType){

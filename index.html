@@ -28,10 +28,6 @@
 		
 		var socket = io();
 		
-		strHeroes = [];
-		agiHeroes = [];
-		intHeroes = [];
-		
 		//Send start event
 		var startButton = document.getElementById('start');
 		startButton.addEventListener('click', function(e){
@@ -39,16 +35,35 @@
 			socket.emit('start');
 		});
 		
-		//Handle start event - need to take available heroes as input later
+		//Handle start event
 		socket.on('start', function(heroes){
-			strHeroes = heroes[0];
-			agiHeroes = heroes[1];
-			intHeroes = heroes[2];
+			setImages(heroes[0], heroes[1], heroes[2]);
 		});
 		
 		//Send pick event
 		
 		//Receive update event
+		
+		
+		//Helper funcs
+		function setImages(strHeroes, agiHeroes, intHeroes){
+		
+			strHeroes.forEach(function(e){
+				var elem = document.createElement("img");
+				elem.src = 'data/heroes/img/' + e + '.webdp';
+				document.getElementById("str").appendChild(elem);
+			});
+			agiHeroes.forEach(function(e){
+				var elem = document.createElement("img");
+				elem.src = 'data/heroes/img/' + e + '.webdp';
+				document.getElementById("agi").appendChild(elem);
+			});
+			intHeroes.forEach(function(e){
+				var elem = document.createElement("img");
+				elem.src = 'data/heroes/img/' + e + '.webdp';
+				document.getElementById("agi").appendChild(elem);
+			});
+		}
 
 	
 	</script>

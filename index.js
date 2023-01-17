@@ -30,7 +30,7 @@ function selectHeroes(numPerType){
 
 function selectHeroesOfType(type, numPerType){
 	const path = 'data/heroes/' + type + '.csv';
-	const csv = fs.readFileSync(path).toString().trim();
+	const csv = fs.readFileSync(path).toString().trim().replace(/\s+/g, '');
 	var arr = csv.split(',');
 	return getRandom(arr, numPerType)
 }

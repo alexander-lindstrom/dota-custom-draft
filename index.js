@@ -8,7 +8,7 @@ const port = process.env.PORT || 3000;
 const csv = require('jquery-csv');
 const fs = require('fs');
 
-const dir = path.join(__dirname, 'public');
+const dir = path.join(__dirname, '/public');
 app.use(express.static(dir));
 
 app.get('/', (req, res) => {
@@ -36,7 +36,7 @@ function selectHeroes(numPerType){
 }
 
 function selectHeroesOfType(type, numPerType){
-	const path = 'public/heroes/' + type + '.csv';
+	const path = 'public/assets/' + type + '.csv';
 	const csv = fs.readFileSync(path).toString().trim().replace(/\s+/g, '');
 	var arr = csv.split(',');
 	return getRandom(arr, numPerType)

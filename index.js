@@ -9,6 +9,7 @@ const csv = require('jquery-csv');
 const fs = require('fs');
 
 const dir = path.join(__dirname, '/public');
+console.log(dir)
 app.use(express.static(dir));
 
 app.get('/', (req, res) => {

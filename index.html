@@ -2,8 +2,8 @@
 <html>
   <head>
     <title>Custom CD draft</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css" 
-	integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" 
+	integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 	
   </head>
   
@@ -14,59 +14,25 @@
 			<button type="button" id="stop" class="btn btn-secondary btn-lg">Stop</button>
 		</div>
 	</div>
-    <div id="str">
-	  <h2>Strength heroes</h2>
+    <div class="container" id="str">
+		<h2>Strength heroes</h2>
+		<span class="border border-primary"></span>
+		<span class="border border-secondary"></span>
+		<span class="border border-success"></span>
+		<span class="border border-danger"></span>
+		<span class="border border-warning"></span>
+		<span class="border border-info"></span>
+		<span class="border border-light"></span>
+		<span class="border border-dark"></span>
+		<span class="border border-white"></span>
 	</div>
-	<div id="agi">
-	  <h2>Agility heroes</h2>
+	<div class="container" id="agi">
+		<h2>Agility heroes</h2>
 	</div>
-	<div id="int">
-	  <h2>Intelligence heroes</h2>
+	<div class="container" id="int">
+		<h2>Intelligence heroes</h2>
 	</div>
     <script src="/socket.io/socket.io.js"></script>
-	<script>
-		
-		var socket = io();
-		
-		//Send start event
-		var startButton = document.getElementById('start');
-		startButton.addEventListener('click', function(e){
-
-			socket.emit('start');
-		});
-		
-		//Handle start event
-		socket.on('start', function(heroes){
-			setImages(heroes[0], heroes[1], heroes[2]);
-		});
-		
-		//Send pick event
-		
-		//Receive update event
-		
-		
-		//Helper funcs
-		function setImages(strHeroes, agiHeroes, intHeroes){
-		
-			strHeroes.forEach(function(e){
-				var elem = document.createElement("img");
-				
-				elem.src = '/public/assets/images/' + e + '.webp';
-				document.getElementById("str").appendChild(elem);
-			});
-			agiHeroes.forEach(function(e){
-				var elem = document.createElement("img");
-				elem.src = '/public/assets/images/' + e + '.webp';
-				document.getElementById("agi").appendChild(elem);
-			});
-			intHeroes.forEach(function(e){
-				var elem = document.createElement("img");
-				elem.src = '/public/assets/images/' + e + '.webp';
-				document.getElementById("int").appendChild(elem);
-			});
-		}
-
-	
-	</script>
+	<script src="client.js"></script>
   </body>
 </html>

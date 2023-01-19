@@ -9,8 +9,11 @@ const csv = require('jquery-csv');
 const fs = require('fs');
 
 const dir = path.join(__dirname, '/public');
-console.log(dir)
 app.use(express.static(dir));
+const heroesPerType = 5;
+const turnOrder = getTurnOrder('radiant');
+var index = 0;
+const startingFaction = 'radiant';
 
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/index.html');
@@ -19,7 +22,7 @@ app.get('/', (req, res) => {
 io.on('connection', (socket) => {
 	
   socket.on('start', ()  => {
-	heroes = selectHeroes(9); //This value should be configurable
+	heroes = selectHeroes(heroesPerType);
     io.emit('start', heroes);
   });
   
@@ -27,11 +30,52 @@ io.on('connection', (socket) => {
     io.emit('stop');
   });
   
+  socket.on('pick', (id)  => {
+	processPick(id)
+  });
+  
 });
 
 //Todo: 
 //Add timer
 //If the time runs out a hero is randomly selected and the change of state propagated to users.
+
+function processPick(id){
+	if (!validPick()){
+		return 
+	}
+	const phaseOrder = getPhaseOrder();
+	const turnOrder = getTurnOrder(startingFaction);
+	
+	const phase = phaseOrder[index];
+	const faction = turnOrder[index];
+
+	io.emit('pick', phase, faction, id);
+	index++;
+}
+
+//do nothing unless the click is from the captain of the currently active team.
+//also the draft is not over
+function validPick(){
+	return true;
+}
+
+function getTurnOrder(startingFaction){
+	
+	var turnOrder = ['radiant', 'dire', 'radiant', 'dire', 'radiant', 'dire', 'radiant', 'dire',
+		'dire', 'radiant', 'radiant', 'dire', 'dire', 'radiant', 'radiant', 'dire'];
+	if (startingFaction === 'dire'){
+		//Flip order
+		turnOrder.map(x => x = (x==='radiant') ? 'dire' : 'radiant'); //Not working properly it seems
+	}
+	return turnOrder
+}
+
+function getPhaseOrder(){
+	return ['ban', 'ban', 'ban', 'ban', 'ban', 'ban', 'pick', 'pick', 'pick', 'pick',
+		'pick', 'pick', 'pick', 'pick', 'pick', 'pick'];
+}
+
 
 function selectHeroes(numPerType){
 

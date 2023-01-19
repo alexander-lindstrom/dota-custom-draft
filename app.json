@@ -1,8 +1,8 @@
 {
-  "name": "Socket-Chat-Example",
-  "description": "my first socket.io app",
-  "website": "https://github.com/socketio/chat-example",
-  "repository": "https://github.com/socketio/chat-example",
+  "name": "dota-custom-draft",
+  "description": "Drafting simulator for custom game mode",
+  "website": "https://github.com/alexander-lindstrom/dota-custom-draft",
+  "repository": "https://github.com/alexander-lindstrom/dota-custom-draft",
   "logo": "https://node-js-sample.herokuapp.com/node.svg",
   "success_url": "/",
   "keywords": [

@@ -22,10 +22,18 @@ socket.on('stop', function(){
 	resetState()
 });
 		
-//Send pick event
+function sendPickEvent(id){
+	socket.emit('pick', id);
+}
 //Add some kind of confirm (select, cancel)
 		
-//Receive update event
+//Receive pick events
+socket.on('pick', function(phase, faction, child_id){
+	const parent_id = faction + '_' + phase;
+	console.log(parent_id, child_id)
+	
+	document.getElementById(parent_id).appendChild(document.getElementById(child_id));
+});
 		
 initialState()
 		
@@ -35,18 +43,30 @@ function setImages(strHeroes, agiHeroes, intHeroes){
 	strHeroes.forEach(function(e){
 		var elem = document.createElement("img");		
 		elem.src = '/assets/images/' + e + '.webp';
+		elem.id = e;
+		elem.onclick = function(a){
+			sendPickEvent(elem.id);
+		}
 		document.getElementById("str").appendChild(elem);
 	});
 			
 	agiHeroes.forEach(function(e){
 		var elem = document.createElement("img");
 		elem.src = '/assets/images/' + e + '.webp';
+		elem.id = e;
+		elem.onclick = function(a){
+			sendPickEvent(elem.id);
+		}
 		document.getElementById("agi").appendChild(elem);
 	});
 	
 	intHeroes.forEach(function(e){
 		var elem = document.createElement("img");
 		elem.src = '/assets/images/' + e + '.webp';
+		elem.id = e;
+		elem.onclick = function(a){
+			sendPickEvent(elem.id);
+		}
 		document.getElementById("int").appendChild(elem);
 	});
 }
@@ -54,7 +74,7 @@ function setImages(strHeroes, agiHeroes, intHeroes){
 function initialState(){
 	
 	var h2 = document.createElement('h2');
-    h2.innerHTML= "Strenght heroes" ;
+    h2.innerHTML= "Strength heroes" ;
 	document.getElementById("str").appendChild(h2);
 	
 	h2 = document.createElement('h2');
@@ -67,19 +87,19 @@ function initialState(){
 	
 	h2 = document.createElement('h2');
     h2.innerHTML= "Radiant bans" ;
-	document.getElementById("radiant_bans").appendChild(h2);
+	document.getElementById("radiant_ban").appendChild(h2);
 	
 	h2 = document.createElement('h2');
     h2.innerHTML= "Radiant picks" ;
-	document.getElementById("radiant_picks").appendChild(h2);
+	document.getElementById("radiant_pick").appendChild(h2);
 	
 	h2 = document.createElement('h2');
     h2.innerHTML= "Dire bans" ;
-	document.getElementById("dire_picks").appendChild(h2);
+	document.getElementById("dire_ban").appendChild(h2);
 	
 	h2 = document.createElement('h2');
     h2.innerHTML= "Dire picks" ;
-	document.getElementById("dire_picks").appendChild(h2);
+	document.getElementById("dire_pick").appendChild(h2);
 }
 
 function resetState(){

@@ -1,0 +1,8 @@
+todo.txt
+
+Add timer
+Add timeout behavior
+Enable becoming captain
+Allow only captains to pick
+Indicate when draft is over
+Cleanup

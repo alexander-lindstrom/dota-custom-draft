@@ -8,6 +8,12 @@
   </head>
   
   <body>
+	<style>
+		.container {
+		  margin-left: 0!important;
+		  margin-right: 0!important;
+		}
+	</style>
 	<div class="row" id="buttons">
 		<div class="col text-center">
 			<button type="button" id="start" class="btn btn-primary btn-lg">Start</button>
@@ -15,23 +21,21 @@
 		</div>
 	</div>
     <div class="container" id="str">
-		<h2>Strength heroes</h2>
-		<span class="border border-primary"></span>
-		<span class="border border-secondary"></span>
-		<span class="border border-success"></span>
-		<span class="border border-danger"></span>
-		<span class="border border-warning"></span>
-		<span class="border border-info"></span>
-		<span class="border border-light"></span>
-		<span class="border border-dark"></span>
-		<span class="border border-white"></span>
 	</div>
 	<div class="container" id="agi">
-		<h2>Agility heroes</h2>
 	</div>
 	<div class="container" id="int">
-		<h2>Intelligence heroes</h2>
 	</div>
+	<div class="container" id="radiant_bans">
+	</div>
+	<div class="container" id="radiant_picks">
+	</div>
+	<div class="container" id="dire_bans">
+	</div>
+	<div class="container" id="dire_picks">
+	</div>
+	
+	
     <script src="/socket.io/socket.io.js"></script>
 	<script src="client.js"></script>
   </body>

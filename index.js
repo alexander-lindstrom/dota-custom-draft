@@ -17,10 +17,16 @@ app.get('/', (req, res) => {
 });
 
 io.on('connection', (socket) => {
+	
   socket.on('start', ()  => {
 	heroes = selectHeroes(9); //This value should be configurable
     io.emit('start', heroes);
   });
+  
+  socket.on('stop', ()  => {
+    io.emit('stop');
+  });
+  
 });
 
 //Todo: 

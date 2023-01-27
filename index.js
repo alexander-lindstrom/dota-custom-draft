@@ -24,6 +24,7 @@ io.on('connection', (socket) => {
   socket.on('start', ()  => {
 	heroes = selectHeroes(heroesPerType);
     io.emit('start', heroes);
+	io.emit('radiant_timer_start', 30); //todo: radiant always start
   });
   
   socket.on('stop', ()  => {

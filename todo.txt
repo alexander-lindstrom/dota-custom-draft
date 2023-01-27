@@ -5,4 +5,7 @@ Add timeout behavior
 Enable becoming captain
 Allow only captains to pick
 Indicate when draft is over
-Cleanup
+Make the page nicer visually
+
+
+https://albert-gonzalez.github.io/easytimer.js/

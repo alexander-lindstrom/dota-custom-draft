@@ -34,10 +34,44 @@ socket.on('pick', function(phase, faction, child_id){
 	
 	document.getElementById(parent_id).appendChild(document.getElementById(child_id));
 });
+
+//Timer events
+
+
+//radiant_timer_start
+socket.on('radiant_timer_start', function(initialValue){
+	startRadiantTimer(initialValue);
+});
+
+
+
 		
 initialState()
 		
 //Helper funcs - move to some other file later
+function startRadiantTimer(initialVal){
+	console.log(initialVal)
+	var downloadTimer = setInterval(function(){
+	  if(initialVal <= 0){
+		clearInterval(downloadTimer);
+	  }
+	  document.getElementById("radiant_timer").innerHTML = initialVal;
+	  initialVal -= 1;
+	}, 1000);
+}
+
+/* How to remove timer?
+function stopRadiantReserve(){
+	var downloadTimer = setInterval(function(){
+	  if(initialVal <= 0){
+		clearInterval(downloadTimer);
+	  }
+	  document.getElementById("radiant_reserve").innerHTML = initialVal;
+	  initialVal -= 1;
+	}, 1000);
+}
+*/
+
 function setImages(strHeroes, agiHeroes, intHeroes){
 		
 	strHeroes.forEach(function(e){

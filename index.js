@@ -29,6 +29,10 @@ io.on('connection', (socket) => {
   
   socket.on('stop', ()  => {
     io.emit('stop');
+	io.emit('radiant_timer_stop');
+	io.emit('dire_timer_stop');
+	io.emit('radiant_reserve_stop');
+	io.emit('dire_reserve_stop');
   });
   
   socket.on('pick', (id)  => {

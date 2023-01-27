@@ -1,11 +1,11 @@
 todo.txt
 
-Add timer
+Add timer in index.js
 Add timeout behavior
-Enable becoming captain
-Allow only captains to pick
+Random firstpick dire/radiant (fix getTurnOrder)
+
+
 Indicate when draft is over
 Make the page nicer visually
 
 
-https://albert-gonzalez.github.io/easytimer.js/

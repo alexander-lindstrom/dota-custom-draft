@@ -1,4 +1,8 @@
 var socket = io();
+var radiantTimer;
+var direTimer;
+var radiantReserve;
+var direReserve;
 		
 //Send start event
 var startButton = document.getElementById('start');
@@ -40,7 +44,11 @@ socket.on('pick', function(phase, faction, child_id){
 
 //radiant_timer_start
 socket.on('radiant_timer_start', function(initialValue){
-	startRadiantTimer(initialValue);
+	radiantTimer = startTimer("radiant_timer", initialValue);
+});
+//radiant_timer_stop
+socket.on('radiant_timer_stop', function(){
+	clearInterval(radiantTimer); 
 });
 
 
@@ -49,15 +57,15 @@ socket.on('radiant_timer_start', function(initialValue){
 initialState()
 		
 //Helper funcs - move to some other file later
-function startRadiantTimer(initialVal){
-	console.log(initialVal)
-	var downloadTimer = setInterval(function(){
+function startTimer(id, initialVal){
+	var timerId = setInterval(function(){
 	  if(initialVal <= 0){
-		clearInterval(downloadTimer);
+		clearInterval(timerId);
 	  }
-	  document.getElementById("radiant_timer").innerHTML = initialVal;
+	  document.getElementById(id).innerHTML = id + ": " + initialVal;
 	  initialVal -= 1;
 	}, 1000);
+	return timerId;
 }
 
 /* How to remove timer?
@@ -142,10 +150,10 @@ function resetState(){
 	document.getElementById("agi").replaceChildren();
 	document.getElementById("int").replaceChildren();
 	
-	document.getElementById("radiant_bans").replaceChildren();
-	document.getElementById("radiant_picks").replaceChildren();
-	document.getElementById("dire_bans").replaceChildren();
-	document.getElementById("dire_picks").replaceChildren();
+	document.getElementById("radiant_ban").replaceChildren();
+	document.getElementById("radiant_pick").replaceChildren();
+	document.getElementById("dire_ban").replaceChildren();
+	document.getElementById("dire_pick").replaceChildren();
 	
 	initialState()
 }

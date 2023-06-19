@@ -1,5 +1,8 @@
 todo.txt
 
+url: http://ec2-54-244-133-92.us-west-2.compute.amazonaws.com:3000/
+
+
 Add main logic method in client.js
 	Triggered when receiving the start event
 	Keep track of the state

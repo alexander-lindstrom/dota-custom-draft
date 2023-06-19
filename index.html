@@ -2,17 +2,43 @@
 <html>
   <head>
     <title>Custom CD draft</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" 
-	integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 	
   </head>
   
   <body>
 	<style>
-		.container {
+		.available{
+		  margin-left: 0!important;
+		  margin-right: 0!important;
+		  width: 50%;
+		  padding-left: 2%;
+		}
+		
+		.pick_info{
 		  margin-left: 0!important;
 		  margin-right: 0!important;
 		}
+		
+		img{
+		  border: 1px solid #ddd;
+		  border-radius: 4px;
+		  padding: 5px;
+		  width: 125px;
+		}
+		
+		.radiant_info{
+		  position: absolute;
+		  top: 10%;
+		  left: 60%;
+		}
+		.dire_info{
+		  position: absolute;
+		  top: 50%;
+		  left: 60%;
+		}
+		
+		
 	</style>
 	<div class="row" id="buttons">
 		<div class="col text-center">
@@ -20,17 +46,22 @@
 			<button type="button" id="stop" class="btn btn-secondary btn-lg">Stop</button>
 		</div>
 	</div>
-	<div class="container" id="draft_info">
-		<p id=radiant_reserve>radiant reserve:</p>
-		<p id=radiant_timer>radiant time:</p>
-		<p id=dire_reserve>dire reserve:</p>
-		<p id=dire_timer>dire time:</p>
+    <div class="available" id="available_heroes"></div>
+
+	<div class="radiant_info">
+		<h2 id=radiant_reserve>Radiant reserve:</h2>
+		<h2 id=radiant_timer>Radiant time:</h2>
+		<div class="pick_info" id="radiant_ban"></div>
+		<div class="pick_info" id="radiant_pick"></div>
 	</div>
-    <div class="container" id="available_heroes"></div>
-	<div class="container" id="radiant_ban"></div>
-	<div class="container" id="radiant_pick"></div>
-	<div class="container" id="dire_ban"></div>
-	<div class="container" id="dire_pick"></div>
+	
+	<div class="dire_info">
+		<h2 id=dire_reserve>Dire reserve:</h2>
+		<h2 id=dire_timer>Dire time:</h2>
+		<div class="pick_info" id="dire_ban"></div>
+		<div class="pick_info" id="dire_pick"></div>
+	</div>
+	
 	
 	
     <script src="/socket.io/socket.io.js"></script>

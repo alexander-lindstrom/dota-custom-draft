@@ -89,8 +89,6 @@ function selectHeroes(numPerType){
 	intHeroes = selectHeroesOfType('intelligence', numPerType);
 	uniHeroes = selectHeroesOfType('universal', numPerType);
 	
-	console.log(strHeroes, agiHeroes, intHeroes, uniHeroes)
-	
 	return [strHeroes, agiHeroes, intHeroes, uniHeroes]
 }
 

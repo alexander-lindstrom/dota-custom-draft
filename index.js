@@ -10,7 +10,7 @@ const fs = require('fs');
 
 const dir = path.join(__dirname, '/public');
 app.use(express.static(dir));
-const heroesPerType = 9;
+const heroesPerType = 7;
 const turnOrder = getTurnOrder('radiant');
 var index = 0;
 const startingFaction = 'radiant';
@@ -24,7 +24,7 @@ io.on('connection', (socket) => {
   socket.on('start', ()  => {
 	heroes = selectHeroes(heroesPerType);
     io.emit('start', heroes);
-	io.emit('radiant_timer_start', 30); //todo: radiant always start
+	io.emit('radiant_timer_start', 30); //todo: radiant shouldn't always start
   });
   
   socket.on('stop', ()  => {
@@ -41,9 +41,7 @@ io.on('connection', (socket) => {
   
 });
 
-//Todo: 
-//Add timer
-//If the time runs out a hero is randomly selected and the change of state propagated to users.
+
 
 function processPick(id){
 	if (!validPick()){
@@ -59,8 +57,7 @@ function processPick(id){
 	index++;
 }
 
-//do nothing unless the click is from the captain of the currently active team.
-//also the draft is not over
+// at some point make it so only designated drafters are allowed to pick
 function validPick(){
 	return true;
 }
@@ -71,7 +68,7 @@ function getTurnOrder(startingFaction){
 		'dire', 'radiant', 'radiant', 'dire', 'dire', 'radiant', 'radiant', 'dire'];
 	if (startingFaction === 'dire'){
 		//Flip order
-		turnOrder.map(x => x = (x==='radiant') ? 'dire' : 'radiant'); //Not working properly it seems
+		turnOrder.map(x => x = (x==='radiant') ? 'dire' : 'radiant'); // this doesn't seem to work
 	}
 	return turnOrder
 }

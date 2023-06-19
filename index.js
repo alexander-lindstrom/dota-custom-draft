@@ -10,7 +10,7 @@ const fs = require('fs');
 
 const dir = path.join(__dirname, '/public');
 app.use(express.static(dir));
-const heroesPerType = 5;
+const heroesPerType = 9;
 const turnOrder = getTurnOrder('radiant');
 var index = 0;
 const startingFaction = 'radiant';
@@ -87,8 +87,11 @@ function selectHeroes(numPerType){
 	strHeroes = selectHeroesOfType('strength', numPerType);
 	agiHeroes = selectHeroesOfType('agility', numPerType);
 	intHeroes = selectHeroesOfType('intelligence', numPerType);
+	uniHeroes = selectHeroesOfType('universal', numPerType);
 	
-	return [strHeroes, agiHeroes, intHeroes]
+	console.log(strHeroes, agiHeroes, intHeroes, uniHeroes)
+	
+	return [strHeroes, agiHeroes, intHeroes, uniHeroes]
 }
 
 function selectHeroesOfType(type, numPerType){

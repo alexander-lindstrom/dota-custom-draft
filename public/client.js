@@ -18,7 +18,7 @@ startButton.addEventListener('click', function(e){
 		
 //Handle start event
 socket.on('start', function(heroes){
-	setImages(heroes[0], heroes[1], heroes[2]);
+	setImages(heroes[0], heroes[1], heroes[2], heroes[3]);
 });
 
 //Handle start event
@@ -51,8 +51,6 @@ socket.on('radiant_timer_stop', function(){
 	clearInterval(radiantTimer); 
 });
 
-
-
 		
 initialState()
 		
@@ -68,19 +66,7 @@ function startTimer(id, initialVal){
 	return timerId;
 }
 
-/* How to remove timer?
-function stopRadiantReserve(){
-	var downloadTimer = setInterval(function(){
-	  if(initialVal <= 0){
-		clearInterval(downloadTimer);
-	  }
-	  document.getElementById("radiant_reserve").innerHTML = initialVal;
-	  initialVal -= 1;
-	}, 1000);
-}
-*/
-
-function setImages(strHeroes, agiHeroes, intHeroes){
+function setImages(strHeroes, agiHeroes, intHeroes, uniHeroes){
 		
 	strHeroes.forEach(function(e){
 		var elem = document.createElement("img");		
@@ -89,7 +75,7 @@ function setImages(strHeroes, agiHeroes, intHeroes){
 		elem.onclick = function(a){
 			sendPickEvent(elem.id);
 		}
-		document.getElementById("str").appendChild(elem);
+		document.getElementById("available_heroes").appendChild(elem);
 	});
 			
 	agiHeroes.forEach(function(e){
@@ -99,7 +85,7 @@ function setImages(strHeroes, agiHeroes, intHeroes){
 		elem.onclick = function(a){
 			sendPickEvent(elem.id);
 		}
-		document.getElementById("agi").appendChild(elem);
+		document.getElementById("available_heroes").appendChild(elem);
 	});
 	
 	intHeroes.forEach(function(e){
@@ -109,23 +95,25 @@ function setImages(strHeroes, agiHeroes, intHeroes){
 		elem.onclick = function(a){
 			sendPickEvent(elem.id);
 		}
-		document.getElementById("int").appendChild(elem);
+		document.getElementById("available_heroes").appendChild(elem);
+	});
+	
+	uniHeroes.forEach(function(e){
+		var elem = document.createElement("img");
+		elem.src = '/assets/images/' + e + '.webp';
+		elem.id = e;
+		elem.onclick = function(a){
+			sendPickEvent(elem.id);
+		}
+		document.getElementById("available_heroes").appendChild(elem);
 	});
 }
 
 function initialState(){
 	
 	var h2 = document.createElement('h2');
-    h2.innerHTML= "Strength heroes" ;
-	document.getElementById("str").appendChild(h2);
-	
-	h2 = document.createElement('h2');
-    h2.innerHTML= "Agility heroes" ;
-	document.getElementById("agi").appendChild(h2);
-	
-	h2 = document.createElement('h2');
-    h2.innerHTML= "Intelligence heroes" ;
-	document.getElementById("int").appendChild(h2);
+    h2.innerHTML= "Available heroes" ;
+	document.getElementById("available_heroes").appendChild(h2);
 	
 	h2 = document.createElement('h2');
     h2.innerHTML= "Radiant bans" ;
@@ -146,9 +134,7 @@ function initialState(){
 
 function resetState(){
 	
-	document.getElementById("str").replaceChildren();
-	document.getElementById("agi").replaceChildren();
-	document.getElementById("int").replaceChildren();
+	document.getElementById("available_heroes").replaceChildren();
 	
 	document.getElementById("radiant_ban").replaceChildren();
 	document.getElementById("radiant_pick").replaceChildren();

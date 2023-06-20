@@ -12,6 +12,7 @@ const dir = path.join(__dirname, '/public');
 app.use(express.static(dir));
 const heroesPerType = 7;
 const turnOrder = getTurnOrder('radiant');
+const phaseOrder = getPhaseOrder();
 var index = 0;
 const startingFaction = 'radiant';
 const pickTime = 10;
@@ -22,6 +23,9 @@ var availableHeroes;
 var radiantReserve = reserveTime;
 var direReserve = reserveTime;
 var timerState = "not_started";
+var radiantCaptain;
+var direCaptain;
+
 
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/index.html');
@@ -30,6 +34,10 @@ app.get('/', (req, res) => {
 io.on('connection', (socket) => {
 	
   socket.on('start', ()  => {
+	
+	if(radiantCaptain === undefined || direCaptain === undefined){
+		return;
+	}
 	availableHeroes = selectHeroes(heroesPerType);
     io.emit('start', availableHeroes);
 	io.emit('radiant_timer_start', pickTime); //todo: radiant shouldn't always start
@@ -49,11 +57,14 @@ io.on('connection', (socket) => {
 	handlePickEvent(id, user_id)
   });
   
+  socket.on('become_captain', (user_id)  => {
+	handleCaptainReq(user_id)
+  });
+  
 });
 
 function handlePickEvent(hero_id, user_id){
 	
-	console.log(user_id)
 	if (!validPick(user_id)){
 		return;
 	}
@@ -61,6 +72,22 @@ function handlePickEvent(hero_id, user_id){
 	clearTimeout(timer);
 	processPick(hero_id);
 	startNewTimer();
+}
+
+function handleCaptainReq(user_id){
+	
+	console.log(user_id, radiantCaptain, direCaptain)
+	if (radiantCaptain === undefined){
+		radiantCaptain = user_id;
+		io.emit('update_radiant_captain', user_id);
+	}
+	else if(direCaptain === undefined && user_id !== radiantCaptain){
+		direCaptain = user_id;
+		io.emit('update_dire_captain', user_id);
+	}
+	else{
+		console.log("Captain req not accepted");
+	}
 }
 
 function timerExpiration(availableHeroes) {
@@ -155,8 +182,6 @@ function stopAllTimers(){
 
 function processPick(id){
 	
-	const phaseOrder = getPhaseOrder();
-	const turnOrder = getTurnOrder(startingFaction);
 	
 	const phase = phaseOrder[index];
 	const faction = turnOrder[index];
@@ -187,8 +212,15 @@ function updateHeroList(id){
 	console.log("Hero not found when updating the list - something is wrong")
 }
 
-// at some point make it so only designated drafters are allowed to pick
 function validPick(user_id){
+	
+	const turn = turnOrder[index];
+	if (turn === 'radiant'){
+		return user_id === radiantCaptain;
+	}
+	else{
+		return user_id === direCaptain;
+	}
 	return true;
 }
 

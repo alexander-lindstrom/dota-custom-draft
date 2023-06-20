@@ -7,13 +7,12 @@ todo:
 	
 	Proper reset button (fully resets the state)
 	Popconfirm when picking/banning hero?
-	Use socket id: https://socket.io/docs/v3/server-socket-instance/ to control who can b/p?
 	Display the current state that we are in. As in "not started", "dire pick", etc.
 	
 bugs:
 	Dire reserve becomes dire_reserve_time etc.
 	this happens sometimes (unclear if there is incorrect behaviour): localhost/:1 Unchecked runtime.lastError: A 
 		listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
-	timers etc don't stop when the draft has ended
+	Something keeps going when the draft has ended
 
 

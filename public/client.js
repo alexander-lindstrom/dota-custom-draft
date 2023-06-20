@@ -4,25 +4,28 @@ var direTimer;
 var radiantReserveTimer = 20;
 var direReserveTimer = 20;
 
-		
-//Send start event
+//Buttons
 var startButton = document.getElementById('start');
 startButton.addEventListener('click', function(e){
 	socket.emit('start');
 });
 
-//Send stop event
-var startButton = document.getElementById('stop');
-startButton.addEventListener('click', function(e){
+var stopButton = document.getElementById('stop');
+stopButton.addEventListener('click', function(e){
 	socket.emit('stop');
 });
+
+var captainButton = document.getElementById('become_captain');
+captainButton.addEventListener('click', function(e){
+	socket.emit('become_captain', socket.id);
+});
+
 		
-//Handle start event
+//Event handling
 socket.on('start', function(heroes){
 	setImages(heroes[0], heroes[1], heroes[2], heroes[3]);
 });
 
-//Handle start event
 socket.on('stop', function(){
 	resetState()
 });
@@ -30,16 +33,13 @@ socket.on('stop', function(){
 function sendPickEvent(id){
 	socket.emit('pick', id, socket.id);
 }
-//Add some kind of confirm (select, cancel)
 		
-//Receive pick events
 socket.on('pick', function(phase, faction, child_id){
 	const parent_id = faction + '_' + phase;
 	
 	document.getElementById(parent_id).appendChild(document.getElementById(child_id));
 });
 
-//Timer events
 socket.on('radiant_timer_start', function(initialValue){
 	radiantTimer = startTimer("radiant_timer", initialValue);
 });
@@ -66,9 +66,19 @@ socket.on('radiant_reserve_timer_stop', function(){
 socket.on('dire_reserve_timer_start', function(initialValue){
 	direReserveTimer = startTimer("dire_reserve_timer", initialValue);
 });
+
 socket.on('dire_reserve_timer_stop', function(){
 	clearInterval(direReserveTimer); 
 });
+
+socket.on('update_radiant_captain', function(user_id){
+	document.getElementById("radiant_captain").innerHTML = "Radiant captain: " + user_id;
+});
+
+socket.on('update_dire_captain', function(user_id){
+	document.getElementById("dire_captain").innerHTML = "Dire captain: " + user_id;
+});
+
 
 		
 initialState()

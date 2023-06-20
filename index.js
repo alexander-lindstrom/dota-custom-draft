@@ -41,6 +41,7 @@ io.on('connection', (socket) => {
 	availableHeroes = selectHeroes(heroesPerType);
     io.emit('start', availableHeroes);
 	io.emit('radiant_timer_start', pickTime); //todo: radiant shouldn't always start
+	io.emit('update_radiant_status', 'active');
 	timer = setTimeout(timerExpiration, (pickTime+gracePeriod)*1000, availableHeroes);
 	timerState = "radiant_pick";
   });
@@ -182,7 +183,6 @@ function stopAllTimers(){
 
 function processPick(id){
 	
-	
 	const phase = phaseOrder[index];
 	const faction = turnOrder[index];
 	
@@ -196,6 +196,19 @@ function processPick(id){
 		console.log("The draft has ended");
 		clearTimeout(timer);
 		stopAllTimers()
+	}
+	updateStatus(turnOrder[index]);
+}
+
+function updateStatus(faction){
+	
+	if (faction === 'radiant'){
+		io.emit('update_radiant_status', 'active');
+		io.emit('update_dire_status', 'waiting');
+	}
+	else{
+		io.emit('update_dire_status', 'active');
+		io.emit('update_radiant_status', 'waiting');
 	}
 }
 

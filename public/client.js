@@ -72,11 +72,19 @@ socket.on('dire_reserve_timer_stop', function(){
 });
 
 socket.on('update_radiant_captain', function(user_id){
-	document.getElementById("radiant_captain").innerHTML = "Radiant captain: " + user_id;
+	document.getElementById("radiant_captain").innerHTML = "Captain: " + user_id.substring(0,5);
 });
 
 socket.on('update_dire_captain', function(user_id){
-	document.getElementById("dire_captain").innerHTML = "Dire captain: " + user_id;
+	document.getElementById("dire_captain").innerHTML = "Captain: " + user_id.substring(0,5);
+});
+
+socket.on('update_radiant_status', function(state){
+	document.getElementById("radiant_status").innerHTML = "Status: " + state;
+});
+
+socket.on('update_dire_status', function(state){
+	document.getElementById("dire_status").innerHTML = "Status: " + state;
 });
 
 

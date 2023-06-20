@@ -5,9 +5,13 @@ url: http://ec2-54-244-133-92.us-west-2.compute.amazonaws.com:3000/
 
 todo:
 	
+	radiant/dire information in rows in some reasonable way. Add a status column. As in "active", "waiting" or whatever. Probably actually use bootstrap.
+	Bootstrap modal when picking/banning hero? Only if it doesnt look awful. Another option is adding a tooltip.
+		Idea: Link to page with changelog/information in tooltip.
 	Proper reset button (fully resets the state)
-	Popconfirm when picking/banning hero?
-	Display the current state that we are in. As in "not started", "dire pick", etc.
+	
+	
+	
 	
 bugs:
 	Dire reserve becomes dire_reserve_time etc.

@@ -1,8 +1,9 @@
 var socket = io();
 var radiantTimer;
 var direTimer;
-var radiantReserve;
-var direReserve;
+var radiantReserveTimer = 20;
+var direReserveTimer = 20;
+
 		
 //Send start event
 var startButton = document.getElementById('start');
@@ -40,15 +41,34 @@ socket.on('pick', function(phase, faction, child_id){
 });
 
 //Timer events
-
-
-//radiant_timer_start
 socket.on('radiant_timer_start', function(initialValue){
 	radiantTimer = startTimer("radiant_timer", initialValue);
 });
-//radiant_timer_stop
+
 socket.on('radiant_timer_stop', function(){
 	clearInterval(radiantTimer); 
+});
+
+socket.on('dire_timer_start', function(initialValue){
+	direTimer = startTimer("dire_timer", initialValue);
+});
+socket.on('dire_timer_stop', function(){
+	clearInterval(direTimer); 
+});
+
+socket.on('radiant_reserve_timer_start', function(initialValue){
+	radiantReserveTimer = startTimer("radiant_reserve_timer", initialValue);
+});
+
+socket.on('radiant_reserve_timer_stop', function(){
+	clearInterval(radiantReserveTimer); 
+});
+
+socket.on('dire_reserve_timer_start', function(initialValue){
+	direReserveTimer = startTimer("dire_reserve_timer", initialValue);
+});
+socket.on('dire_reserve_timer_stop', function(){
+	clearInterval(direReserveTimer); 
 });
 
 		
@@ -56,6 +76,7 @@ initialState()
 		
 //Helper funcs - move to some other file later
 function startTimer(id, initialVal){
+	console.log(id, initialVal)
 	var timerId = setInterval(function(){
 	  if(initialVal <= 0){
 		clearInterval(timerId);
@@ -120,7 +141,7 @@ function initialState(){
 	document.getElementById("radiant_ban").appendChild(h2);
 	
 	h2 = document.createElement('h2');
-    h2.innerHTML= "Radiant picks" ;
+    h2.innerHTML= "Radiant picks";
 	document.getElementById("radiant_pick").appendChild(h2);
 	
 	h2 = document.createElement('h2');

@@ -14,6 +14,13 @@ const heroesPerType = 7;
 const turnOrder = getTurnOrder('radiant');
 var index = 0;
 const startingFaction = 'radiant';
+const pickTime = 10;
+const reserveTime = 10;
+var timer;
+var availableHeroes;
+var radiantReserve = reserveTime;
+var direReserve = reserveTime;
+var timerState = "not_started";
 
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/index.html');
@@ -22,9 +29,11 @@ app.get('/', (req, res) => {
 io.on('connection', (socket) => {
 	
   socket.on('start', ()  => {
-	heroes = selectHeroes(heroesPerType);
-    io.emit('start', heroes);
-	io.emit('radiant_timer_start', 30); //todo: radiant shouldn't always start
+	availableHeroes = selectHeroes(heroesPerType);
+    io.emit('start', availableHeroes);
+	io.emit('radiant_timer_start', pickTime); //todo: radiant shouldn't always start
+	timer = setTimeout(timerExpiration, pickTime*1000, availableHeroes);
+	timerState = "radiant_pick";
   });
   
   socket.on('stop', ()  => {
@@ -41,6 +50,74 @@ io.on('connection', (socket) => {
   
 });
 
+function timerExpiration(availableHeroes) {
+  
+	switch(timerState){
+	case 'radiant_pick': 
+		if (radiantReserve > 0){
+			timerState = "radiant_reserve";
+			io.emit('radiant_timer_stop');
+			io.emit('radiant_reserve_timer_start', radiantReserve);
+			timer = setTimeout(timerExpiration, radiantReserve*1000, availableHeroes);
+			return
+		}
+		else{
+			fullTimeout();
+		}
+		break;
+	case 'dire_pick':
+		console.log(direReserve)
+		if (direReserve > 0){
+			timerState = "dire_reserve";
+			io.emit('dire_timer_stop');
+			io.emit('dire_reserve_timer_start', direReserve);
+			timer = setTimeout(timerExpiration, direReserve*1000, availableHeroes);
+			return
+		}
+		else{
+			fullTimeout();
+		}
+		break;
+	case 'radiant_reserve':
+		radiantReserve = 0;
+		fullTimeout();
+		break;
+	case 'dire_reserve':
+		
+		direReserve = 0;
+		fullTimeout();
+		break;
+	case 'draft_ended':
+		stopAllTimers();
+		break;
+		
+	default:
+		console.log(timerState)
+	}
+}
+
+function fullTimeout(){
+	
+	processPick(getRandom(availableHeroes.flat(), 1))
+	stopAllTimers();
+	
+	if (turnOrder[index] === 'radiant'){
+		io.emit('radiant_timer_start', pickTime);
+		timerState = "radiant_pick";
+	}
+	else{
+		io.emit('dire_timer_start', pickTime);
+		timerState = "dire_pick";
+	}
+	timer = setTimeout(timerExpiration, pickTime*1000, availableHeroes);
+}
+
+function stopAllTimers(){
+	io.emit('dire_reserve_timer_stop');
+	io.emit('radiant_reserve_timer_stop');
+	io.emit('dire_timer_stop');
+	io.emit('radiant_timer_stop');
+}
 
 
 function processPick(id){
@@ -52,9 +129,28 @@ function processPick(id){
 	
 	const phase = phaseOrder[index];
 	const faction = turnOrder[index];
+	
+	updateHeroList(id);
 
 	io.emit('pick', phase, faction, id);
+	
 	index++;
+	if (index === phaseOrder.length){
+		timerState = "draft_ended";
+		console.log("The draft has ended");
+	}
+}
+
+function updateHeroList(id){
+	
+	for(var i = 0; i < 4; i++){
+		for(var j = 0; j < heroesPerType; j++){
+			if (availableHeroes[i][j] === id){
+				availableHeroes[i].splice(j,1);
+				return
+			}
+		}
+	}
 }
 
 // at some point make it so only designated drafters are allowed to pick
@@ -77,7 +173,6 @@ function getPhaseOrder(){
 	return ['ban', 'ban', 'ban', 'ban', 'ban', 'ban', 'pick', 'pick', 'pick', 'pick',
 		'pick', 'pick', 'pick', 'pick', 'pick', 'pick'];
 }
-
 
 function selectHeroes(numPerType){
 

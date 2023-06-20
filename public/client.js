@@ -28,14 +28,13 @@ socket.on('stop', function(){
 });
 		
 function sendPickEvent(id){
-	socket.emit('pick', id);
+	socket.emit('pick', id, socket.id);
 }
 //Add some kind of confirm (select, cancel)
 		
 //Receive pick events
 socket.on('pick', function(phase, faction, child_id){
 	const parent_id = faction + '_' + phase;
-	console.log(parent_id, child_id)
 	
 	document.getElementById(parent_id).appendChild(document.getElementById(child_id));
 });
@@ -156,7 +155,6 @@ function initialState(){
 function resetState(){
 	
 	document.getElementById("available_heroes").replaceChildren();
-	
 	document.getElementById("radiant_ban").replaceChildren();
 	document.getElementById("radiant_pick").replaceChildren();
 	document.getElementById("dire_ban").replaceChildren();

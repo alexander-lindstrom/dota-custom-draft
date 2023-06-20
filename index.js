@@ -16,6 +16,7 @@ var index = 0;
 const startingFaction = 'radiant';
 const pickTime = 10;
 const reserveTime = 10;
+const gracePeriod = 2; // Easy way to handle sync/delay issues.
 var timer;
 var availableHeroes;
 var radiantReserve = reserveTime;
@@ -32,7 +33,7 @@ io.on('connection', (socket) => {
 	availableHeroes = selectHeroes(heroesPerType);
     io.emit('start', availableHeroes);
 	io.emit('radiant_timer_start', pickTime); //todo: radiant shouldn't always start
-	timer = setTimeout(timerExpiration, pickTime*1000, availableHeroes);
+	timer = setTimeout(timerExpiration, (pickTime+gracePeriod)*1000, availableHeroes);
 	timerState = "radiant_pick";
   });
   
@@ -44,11 +45,23 @@ io.on('connection', (socket) => {
 	io.emit('dire_reserve_stop');
   });
   
-  socket.on('pick', (id)  => {
-	processPick(id)
+  socket.on('pick', (id, user_id)  => {
+	handlePickEvent(id, user_id)
   });
   
 });
+
+function handlePickEvent(hero_id, user_id){
+	
+	console.log(user_id)
+	if (!validPick(user_id)){
+		return;
+	}
+	stopCurrentTimer()
+	clearTimeout(timer);
+	processPick(hero_id);
+	startNewTimer();
+}
 
 function timerExpiration(availableHeroes) {
   
@@ -58,7 +71,7 @@ function timerExpiration(availableHeroes) {
 			timerState = "radiant_reserve";
 			io.emit('radiant_timer_stop');
 			io.emit('radiant_reserve_timer_start', radiantReserve);
-			timer = setTimeout(timerExpiration, radiantReserve*1000, availableHeroes);
+			timer = setTimeout(timerExpiration, (radiantReserve+gracePeriod)*1000, availableHeroes);
 			return
 		}
 		else{
@@ -66,12 +79,11 @@ function timerExpiration(availableHeroes) {
 		}
 		break;
 	case 'dire_pick':
-		console.log(direReserve)
 		if (direReserve > 0){
 			timerState = "dire_reserve";
 			io.emit('dire_timer_stop');
 			io.emit('dire_reserve_timer_start', direReserve);
-			timer = setTimeout(timerExpiration, direReserve*1000, availableHeroes);
+			timer = setTimeout(timerExpiration, (direReserve+gracePeriod)*1000, availableHeroes);
 			return
 		}
 		else{
@@ -98,8 +110,12 @@ function timerExpiration(availableHeroes) {
 
 function fullTimeout(){
 	
-	processPick(getRandom(availableHeroes.flat(), 1))
+	processPick(getRandom(availableHeroes.flat(), 1)[0])
 	stopAllTimers();
+	startNewTimer()
+}
+
+function startNewTimer(){
 	
 	if (turnOrder[index] === 'radiant'){
 		io.emit('radiant_timer_start', pickTime);
@@ -109,7 +125,24 @@ function fullTimeout(){
 		io.emit('dire_timer_start', pickTime);
 		timerState = "dire_pick";
 	}
-	timer = setTimeout(timerExpiration, pickTime*1000, availableHeroes);
+	timer = setTimeout(timerExpiration, (pickTime+gracePeriod)*1000, availableHeroes);
+}
+
+function stopCurrentTimer(){
+	
+	console.log(timerState)
+	if (turnOrder[index] === 'radiant' && timerState === "radiant_pick"){
+		io.emit('radiant_timer_stop');
+	}
+	else if (turnOrder[index] === 'radiant' && timerState === "radiant_reserve"){
+		io.emit('radiant_reserve_timer_stop');
+	}
+	else if (turnOrder[index] === 'dire' && timerState === "dire_pick"){
+		io.emit('dire_timer_stop');
+	}
+	else if (turnOrder[index] === 'dire' && timerState === "dire_reserve"){
+		io.emit('dire_reserve_timer_stop');
+	}
 }
 
 function stopAllTimers(){
@@ -121,9 +154,7 @@ function stopAllTimers(){
 
 
 function processPick(id){
-	if (!validPick()){
-		return 
-	}
+	
 	const phaseOrder = getPhaseOrder();
 	const turnOrder = getTurnOrder(startingFaction);
 	
@@ -138,23 +169,26 @@ function processPick(id){
 	if (index === phaseOrder.length){
 		timerState = "draft_ended";
 		console.log("The draft has ended");
+		clearTimeout(timer);
+		stopAllTimers()
 	}
 }
 
 function updateHeroList(id){
 	
 	for(var i = 0; i < 4; i++){
-		for(var j = 0; j < heroesPerType; j++){
+		for(var j = 0; j < availableHeroes[i].length; j++){
 			if (availableHeroes[i][j] === id){
 				availableHeroes[i].splice(j,1);
-				return
+				return;
 			}
 		}
 	}
+	console.log("Hero not found when updating the list - something is wrong")
 }
 
 // at some point make it so only designated drafters are allowed to pick
-function validPick(){
+function validPick(user_id){
 	return true;
 }
 

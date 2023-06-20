@@ -3,20 +3,17 @@ todo.txt
 url: http://ec2-54-244-133-92.us-west-2.compute.amazonaws.com:3000/
 
 
-Add main logic method in client.js
-	Triggered when receiving the start event
-	Keep track of the state
-	Handle pick events from users
-	If timers expires
-		timer -> start reserve time timer
-		reserve -> randomly select hero -> send pick event
-	If the draft has finished -> indicate in some way
-		
-
-Random firstpick dire/radiant (also fix getTurnOrder)
-
-
-Make the page nicer visually
-Popconfirm when picking/banning hero?
+todo:
+	
+	Proper reset button (fully resets the state)
+	Popconfirm when picking/banning hero?
+	Use socket id: https://socket.io/docs/v3/server-socket-instance/ to control who can b/p?
+	Display the current state that we are in. As in "not started", "dire pick", etc.
+	
+bugs:
+	Dire reserve becomes dire_reserve_time etc.
+	this happens sometimes (unclear if there is incorrect behaviour): localhost/:1 Unchecked runtime.lastError: A 
+		listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+	timers etc don't stop when the draft has ended
 
 

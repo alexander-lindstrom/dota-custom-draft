@@ -31,6 +31,19 @@ app.get('/', (req, res) => {
   res.sendFile(__dirname + '/index.html');
 });
 
+function resetState(){
+	
+	index = 0;
+	clearTimeout(timer);
+	availableHeroes = undefined;
+	radiantReserve = reserveTime;
+	direReserve = reserveTime;
+	timerState = "not_started";
+	radiantCaptain = undefined;
+	direCaptain = undefined;
+	stopAllTimers()
+}
+
 io.on('connection', (socket) => {
 	
   socket.on('start', ()  => {
@@ -46,12 +59,10 @@ io.on('connection', (socket) => {
 	timerState = "radiant_pick";
   });
   
-  socket.on('stop', ()  => {
-    io.emit('stop');
-	io.emit('radiant_timer_stop');
-	io.emit('dire_timer_stop');
-	io.emit('radiant_reserve_stop');
-	io.emit('dire_reserve_stop');
+  socket.on('reset', (user_id)  => {
+	handleReset()
+	io.emit('reset');
+	
   });
   
   socket.on('pick', (id, user_id)  => {
@@ -60,6 +71,10 @@ io.on('connection', (socket) => {
   
   socket.on('become_captain', (user_id)  => {
 	handleCaptainReq(user_id)
+  });
+  
+  socket.on('reset', (user_id)  => {
+	handleReset(user_id)
   });
   
 });
@@ -89,6 +104,11 @@ function handleCaptainReq(user_id){
 	else{
 		console.log("Captain req not accepted");
 	}
+}
+
+//Only allowing captains to reset would lead to the page getting stuck all the time. For now let anyone.
+function handleReset(user_id){
+	resetState()
 }
 
 function timerExpiration(availableHeroes) {

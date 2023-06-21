@@ -10,9 +10,9 @@ startButton.addEventListener('click', function(e){
 	socket.emit('start');
 });
 
-var stopButton = document.getElementById('stop');
+var stopButton = document.getElementById('reset');
 stopButton.addEventListener('click', function(e){
-	socket.emit('stop');
+	socket.emit('reset');
 });
 
 var captainButton = document.getElementById('become_captain');
@@ -26,7 +26,7 @@ socket.on('start', function(heroes){
 	setImages(heroes[0], heroes[1], heroes[2], heroes[3]);
 });
 
-socket.on('stop', function(){
+socket.on('reset', function(){
 	resetState()
 });
 		
@@ -149,23 +149,23 @@ function setImages(strHeroes, agiHeroes, intHeroes, uniHeroes){
 
 function initialState(){
 	
-	var h2 = document.createElement('h2');
+	var h2 = document.createElement('h4');
     h2.innerHTML= "Available heroes" ;
 	document.getElementById("available_heroes").appendChild(h2);
 	
-	h2 = document.createElement('h2');
+	h2 = document.createElement('h4');
     h2.innerHTML= "Radiant bans" ;
 	document.getElementById("radiant_ban").appendChild(h2);
 	
-	h2 = document.createElement('h2');
+	h2 = document.createElement('h4');
     h2.innerHTML= "Radiant picks";
 	document.getElementById("radiant_pick").appendChild(h2);
 	
-	h2 = document.createElement('h2');
+	h2 = document.createElement('h4');
     h2.innerHTML= "Dire bans" ;
 	document.getElementById("dire_ban").appendChild(h2);
 	
-	h2 = document.createElement('h2');
+	h2 = document.createElement('h4');
     h2.innerHTML= "Dire picks" ;
 	document.getElementById("dire_pick").appendChild(h2);
 }
@@ -177,6 +177,10 @@ function resetState(){
 	document.getElementById("radiant_pick").replaceChildren();
 	document.getElementById("dire_ban").replaceChildren();
 	document.getElementById("dire_pick").replaceChildren();
+	document.getElementById("radiant_captain").innerHTML = "Captain: ";
+	document.getElementById("dire_captain").innerHTML = "Captain: ";
+	document.getElementById("radiant_status").innerHTML = "Status: waiting";
+	document.getElementById("dire_status").innerHTML = "Status: : ";
 	
 	initialState()
 }

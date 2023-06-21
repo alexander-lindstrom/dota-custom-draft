@@ -5,10 +5,10 @@ url: http://ec2-54-244-133-92.us-west-2.compute.amazonaws.com:3000/
 
 todo:
 	
-	radiant/dire information in rows in some reasonable way. Add a status column. As in "active", "waiting" or whatever. Probably actually use bootstrap.
-	Bootstrap modal when picking/banning hero? Only if it doesnt look awful. Another option is adding a tooltip.
+
+	Confirmation when picking banning? Only if it doesnt look awful. Another option is adding a tooltip.
 		Idea: Link to page with changelog/information in tooltip.
-	Proper reset button (fully resets the state)
+	Copy draft to clipboard option
 	
 	
 	

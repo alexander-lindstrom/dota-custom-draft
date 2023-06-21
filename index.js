@@ -200,7 +200,6 @@ function stopAllTimers(){
 	io.emit('radiant_timer_stop');
 }
 
-
 function processPick(id){
 	
 	const phase = phaseOrder[index];

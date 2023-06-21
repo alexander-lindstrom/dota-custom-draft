@@ -41,7 +41,7 @@ socket.on('pick', function(phase, faction, child_id){
 });
 
 socket.on('radiant_timer_start', function(initialValue){
-	radiantTimer = startTimer("radiant_timer", initialValue);
+	radiantTimer = startTimer("radiant_timer", "Timer: ", initialValue);
 });
 
 socket.on('radiant_timer_stop', function(){
@@ -49,14 +49,14 @@ socket.on('radiant_timer_stop', function(){
 });
 
 socket.on('dire_timer_start', function(initialValue){
-	direTimer = startTimer("dire_timer", initialValue);
+	direTimer = startTimer("dire_timer", "Timer: ", initialValue);
 });
 socket.on('dire_timer_stop', function(){
 	clearInterval(direTimer); 
 });
 
 socket.on('radiant_reserve_timer_start', function(initialValue){
-	radiantReserveTimer = startTimer("radiant_reserve_timer", initialValue);
+	radiantReserveTimer = startTimer("radiant_reserve_timer", "Reserve: ", initialValue);
 });
 
 socket.on('radiant_reserve_timer_stop', function(){
@@ -64,7 +64,7 @@ socket.on('radiant_reserve_timer_stop', function(){
 });
 
 socket.on('dire_reserve_timer_start', function(initialValue){
-	direReserveTimer = startTimer("dire_reserve_timer", initialValue);
+	direReserveTimer = startTimer("dire_reserve_timer", "Reserve: ", initialValue);
 });
 
 socket.on('dire_reserve_timer_stop', function(){
@@ -92,13 +92,13 @@ socket.on('update_dire_status', function(state){
 initialState()
 		
 //Helper funcs - move to some other file later
-function startTimer(id, initialVal){
+function startTimer(id, string, initialVal){
 	console.log(id, initialVal)
 	var timerId = setInterval(function(){
 	  if(initialVal <= 0){
 		clearInterval(timerId);
 	  }
-	  document.getElementById(id).innerHTML = id + ": " + initialVal;
+	  document.getElementById(id).innerHTML = string + initialVal;
 	  initialVal -= 1;
 	}, 1000);
 	return timerId;

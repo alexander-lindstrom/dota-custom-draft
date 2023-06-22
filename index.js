@@ -81,7 +81,7 @@ io.on('connection', (socket) => {
 
 function handlePickEvent(hero_id, user_id){
 	
-	if (!validPick(user_id)){
+	if (!validPick(user_id) || draftEnded() === true){
 		return;
 	}
 	stopCurrentTimer()

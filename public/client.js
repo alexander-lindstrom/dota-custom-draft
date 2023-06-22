@@ -121,7 +121,6 @@ initialState()
 		
 //Helper funcs - move to some other file later
 function startTimer(id, string, initialVal){
-	console.log(id, initialVal)
 	var timerId = setInterval(function(){
 	  if(initialVal <= 0){
 		clearInterval(timerId);

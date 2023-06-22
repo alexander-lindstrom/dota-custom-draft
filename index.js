@@ -15,8 +15,8 @@ const turnOrder = getTurnOrder('radiant');
 const phaseOrder = getPhaseOrder();
 var index = 0;
 const startingFaction = 'radiant';
-const pickTime = 10;
-const reserveTime = 10;
+const pickTime = 30;
+const reserveTime = 60;
 const gracePeriod = 2; // Easy way to handle sync/delay issues.
 var timer;
 var availableHeroes;
@@ -94,7 +94,6 @@ function handlePickEvent(hero_id, user_id){
 
 function handleCaptainReq(user_id){
 	
-	console.log(user_id, radiantCaptain, direCaptain)
 	if (radiantCaptain === undefined){
 		radiantCaptain = user_id;
 		io.emit('update_radiant_captain', user_id);
@@ -162,7 +161,6 @@ function fullTimeout(){
 	
 	processPick(getRandom(availableHeroes.flat(), 1)[0])
 	stopAllTimers();
-	console.log(draftEnded())
 	if (draftEnded() === false){
 		startNewTimer();
 	}
@@ -183,7 +181,6 @@ function startNewTimer(){
 
 function stopCurrentTimer(){
 	
-	console.log(timerState)
 	if (turnOrder[index] === 'radiant' && timerState === "radiant_pick"){
 		io.emit('radiant_timer_stop');
 	}

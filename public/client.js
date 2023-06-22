@@ -20,6 +20,34 @@ captainButton.addEventListener('click', function(e){
 	socket.emit('become_captain', socket.id);
 });
 
+var copyButton = document.getElementById('copy_draft');
+copyButton.addEventListener('click', function(e){
+	setClipBoard();
+});
+
+function setClipBoard(){
+	
+	const dire = document.getElementById("dire_pick").getElementsByTagName('*');
+	const radiant = document.getElementById("radiant_pick").getElementsByTagName('*');
+	
+	var str = "Radiant: ";
+	
+	//Indexing needs to be like this for some reason
+	for (var i = 1; i < radiant.length; i++){
+		str = str + radiant[i].id + ", ";
+    }
+	
+	str = str + "\nDire: "
+	
+	for (var i = 1; i < dire.length; i++){
+		str = str + dire[i].id + ", ";
+    }
+	
+	const clipBoard = navigator.clipboard;
+	clipBoard.writeText(str).then(() => {
+		alert("Copied draft to clipboard!");
+	});
+}
 		
 //Event handling
 socket.on('start', function(heroes){

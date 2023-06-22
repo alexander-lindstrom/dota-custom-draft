@@ -177,10 +177,14 @@ function resetState(){
 	document.getElementById("radiant_pick").replaceChildren();
 	document.getElementById("dire_ban").replaceChildren();
 	document.getElementById("dire_pick").replaceChildren();
-	document.getElementById("radiant_captain").innerHTML = "Captain: ";
-	document.getElementById("dire_captain").innerHTML = "Captain: ";
+	document.getElementById("radiant_captain").innerHTML = "Captain: none";
+	document.getElementById("dire_captain").innerHTML = "Captain: none";
 	document.getElementById("radiant_status").innerHTML = "Status: waiting";
-	document.getElementById("dire_status").innerHTML = "Status: : ";
+	document.getElementById("dire_status").innerHTML = "Status: waiting";
+	document.getElementById("radiant_timer").innerHTML = "Timer: 30";
+	document.getElementById("dire_timer").innerHTML = "Timer: 30";
+	document.getElementById("radiant_reserve").innerHTML = "Reserve: 60";
+	document.getElementById("dire_reserve").innerHTML = "Reserve: 60";
 	
 	initialState()
 }

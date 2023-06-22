@@ -87,7 +87,9 @@ function handlePickEvent(hero_id, user_id){
 	stopCurrentTimer()
 	clearTimeout(timer);
 	processPick(hero_id);
-	startNewTimer();
+	if (draftEnded() === false){
+		startNewTimer();
+	}
 }
 
 function handleCaptainReq(user_id){
@@ -160,7 +162,10 @@ function fullTimeout(){
 	
 	processPick(getRandom(availableHeroes.flat(), 1)[0])
 	stopAllTimers();
-	startNewTimer()
+	console.log(draftEnded())
+	if (draftEnded() === false){
+		startNewTimer();
+	}
 }
 
 function startNewTimer(){
@@ -210,13 +215,17 @@ function processPick(id){
 	io.emit('pick', phase, faction, id);
 	
 	index++;
-	if (index === phaseOrder.length){
+	if (draftEnded()){
 		timerState = "draft_ended";
 		console.log("The draft has ended");
 		clearTimeout(timer);
 		stopAllTimers()
 	}
 	updateStatus(turnOrder[index]);
+}
+
+function draftEnded(){
+	return index === phaseOrder.length;
 }
 
 function updateStatus(faction){

@@ -249,8 +249,8 @@ function resetState(){
 	document.getElementById("dire_captain").innerHTML = "Captain: none";
 	document.getElementById("radiant_status").innerHTML = "Status: waiting";
 	document.getElementById("dire_status").innerHTML = "Status: waiting";
-	document.getElementById("radiant_timer").innerHTML = "Timer: 30";
-	document.getElementById("dire_timer").innerHTML = "Timer: 30";
+	document.getElementById("radiant_timer").innerHTML = "Time: 30";
+	document.getElementById("dire_timer").innerHTML = "Time: 30";
 	document.getElementById("radiant_reserve").innerHTML = "Reserve: 60";
 	document.getElementById("dire_reserve").innerHTML = "Reserve: 60";
 	

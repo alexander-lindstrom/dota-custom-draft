@@ -5,6 +5,9 @@ url: http://ec2-54-244-133-92.us-west-2.compute.amazonaws.com:3000/
 
 todo:
 	
+	Visual improvements - how?
+	Allow captains to change some settings? 
+		For example starting side(requires making it possible for dire to start), pick/reserve time, heroes per type, number of bans, etc.
 	Confirmation when picking banning? Only if it doesnt look awful. Another option is adding a tooltip.
 		Idea: Link to page with changelog/information in tooltip.
 	
@@ -14,5 +17,6 @@ todo:
 bugs:
 	this happens sometimes (unclear if there is incorrect behaviour): localhost/:1 Unchecked runtime.lastError: A 
 		listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+	when resetting - pck/ban headers disappear
 
 

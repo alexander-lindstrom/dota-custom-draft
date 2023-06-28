@@ -89,6 +89,20 @@ function copyTextToClipboard(text) {
 
 	document.body.removeChild(textArea);
 }
+
+function openTab(evt, tabName) {
+  var i, x, tablinks;
+  x = document.getElementsByClassName("city");
+  for (i = 0; i < x.length; i++) {
+    x[i].style.display = "none";
+  }
+  tablinks = document.getElementsByClassName("tablink");
+  for (i = 0; i < x.length; i++) {
+    tablinks[i].classList.remove("w3-light-grey");
+  }
+  document.getElementById(tabName).style.display = "block";
+  evt.currentTarget.classList.add("w3-light-grey");
+}
 		
 //Event handling
 socket.on('start', function(heroes){
@@ -124,16 +138,16 @@ socket.on('dire_timer_stop', function(){
 	clearInterval(direTimer); 
 });
 
-socket.on('radiant_reserve_timer_start', function(initialValue){
-	radiantReserveTimer = startTimer("radiant_reserve_timer", "Reserve: ", initialValue);
+socket.on('radiant_reserve_start', function(initialValue){
+	radiantReserveTimer = startTimer("radiant_reserve", "Reserve: ", initialValue);
 });
 
 socket.on('radiant_reserve_timer_stop', function(){
 	clearInterval(radiantReserveTimer); 
 });
 
-socket.on('dire_reserve_timer_start', function(initialValue){
-	direReserveTimer = startTimer("dire_reserve_timer", "Reserve: ", initialValue);
+socket.on('dire_reserve_start', function(initialValue){
+	direReserveTimer = startTimer("dire_reserve", "Reserve: ", initialValue);
 });
 
 socket.on('dire_reserve_timer_stop', function(){

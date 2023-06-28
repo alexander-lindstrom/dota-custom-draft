@@ -119,7 +119,7 @@ function timerExpiration(availableHeroes) {
 		if (radiantReserve > 0){
 			timerState = "radiant_reserve";
 			io.emit('radiant_timer_stop');
-			io.emit('radiant_reserve_timer_start', radiantReserve);
+			io.emit('radiant_reserve_start', radiantReserve);
 			timer = setTimeout(timerExpiration, (radiantReserve+gracePeriod)*1000, availableHeroes);
 			return
 		}
@@ -131,7 +131,7 @@ function timerExpiration(availableHeroes) {
 		if (direReserve > 0){
 			timerState = "dire_reserve";
 			io.emit('dire_timer_stop');
-			io.emit('dire_reserve_timer_start', direReserve);
+			io.emit('dire_reserve_start', direReserve);
 			timer = setTimeout(timerExpiration, (direReserve+gracePeriod)*1000, availableHeroes);
 			return
 		}
@@ -185,19 +185,19 @@ function stopCurrentTimer(){
 		io.emit('radiant_timer_stop');
 	}
 	else if (turnOrder[index] === 'radiant' && timerState === "radiant_reserve"){
-		io.emit('radiant_reserve_timer_stop');
+		io.emit('radiant_reserve_stop');
 	}
 	else if (turnOrder[index] === 'dire' && timerState === "dire_pick"){
 		io.emit('dire_timer_stop');
 	}
 	else if (turnOrder[index] === 'dire' && timerState === "dire_reserve"){
-		io.emit('dire_reserve_timer_stop');
+		io.emit('dire_reserve_stop');
 	}
 }
 
 function stopAllTimers(){
-	io.emit('dire_reserve_timer_stop');
-	io.emit('radiant_reserve_timer_stop');
+	io.emit('dire_reserve_stop');
+	io.emit('radiant_reserve_stop');
 	io.emit('dire_timer_stop');
 	io.emit('radiant_timer_stop');
 }

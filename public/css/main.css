@@ -1,0 +1,30 @@
+.available{
+		  margin-left: 0!important;
+		  margin-right: 0!important;
+		  width: 40%;
+		  padding-left: 2%;
+		  padding-top: 2%;
+		}
+		
+		.pick_info{
+		  margin-left: 0!important;
+		  margin-right: 0!important;
+		}
+		
+		img{
+		  border: 1px solid #ddd;
+		  border-radius: 4px;
+		  padding: 5px;
+		  width: 125px;
+		}
+		
+		.radiant_info{
+		  position: absolute;
+		  top: 10%;
+		  left: 50%;
+		}
+		.dire_info{
+		  position: absolute;
+		  top: 50%;
+		  left: 50%;
+		}

@@ -17,7 +17,7 @@ stopButton.addEventListener('click', function(e){
 
 var captainButton = document.getElementById('become_captain');
 captainButton.addEventListener('click', function(e){
-	socket.emit('become_captain', socket.id);
+	socket.emit('become_captain');
 });
 
 var copyButton = document.getElementById('copy_draft');
@@ -32,7 +32,7 @@ saveSettingsbutton.addEventListener('click', function(e){
 	var startingFaction = document.getElementById("settings_starting_faction").value;
 	var reserveTime = document.getElementById("settings_reserve_time").value;
 	var increment = document.getElementById("settings_increment").value;
-	socket.emit('settings_req', socket.id, numHeroes, numBans, startingFaction,
+	socket.emit('settings_req', numHeroes, numBans, startingFaction,
 		reserveTime, increment);
 });
 
@@ -106,7 +106,7 @@ socket.on('reset', function(){
 });
 		
 function sendPickEvent(id){
-	socket.emit('pick', socket.id, id);
+	socket.emit('pick', id);
 }
 		
 socket.on('pick', function(phase, faction, child_id){

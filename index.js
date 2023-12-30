@@ -81,30 +81,40 @@ io.on('connection', (socket) => {
 	
   });
   
-  socket.on('reset', (user_id)  => {
-	handleReset()
+  socket.on('reset', ()  => {
+	handleReset(socket.id)
 	io.emit('reset');
 	
   });
   
-  socket.on('pick', (user_id, id)  => {
-	handlePickEvent(user_id, id)
+  socket.on('pick', (id)  => {
+	handlePickEvent(socket.id, id)
   });
   
-  socket.on('become_captain', (user_id)  => {
-	handleCaptainReq(user_id)
+  socket.on('become_captain', ()  => {
+	handleCaptainReq(socket.id)
   });
 
-  socket.on('settings_req', (user_id, num_heroes, num_bans, 
+  socket.on('settings_req', (num_heroes, num_bans, 
 		starting_faction, reserve_time, increment)  => {
-	handleSettingsReq(user_id, num_heroes, num_bans, starting_faction,
+	handleSettingsReq(socket.id, num_heroes, num_bans, starting_faction,
 		reserve_time, increment);
   });
   
-  socket.on('reset', (user_id)  => {
-	handleReset(user_id)
+  socket.on('reset', ()  => {
+	handleReset(socket.id)
   });
-  
+
+  socket.on('disconnect', ()  => {
+	if(socket.id === radiantCaptain){
+		radiantCaptain = undefined;
+		io.emit('update_radiant_captain', '');
+	}
+	else if(socket.id === direCaptain){
+		direCaptain = undefined;
+		io.emit('update_dire_captain', '');
+	}
+  });
 });
 
 function handlePickEvent(user_id, hero_id){

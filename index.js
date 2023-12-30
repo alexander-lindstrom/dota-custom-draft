@@ -24,15 +24,14 @@ const defaultNumBans = 3;
 //Values that may be updated by using the settings modal
 let startingFaction = defaultStartingFaction;
 let pickTime = defaultPickTime;
-let reserveTime = defaultReserveTime;
+let radiantReserve = defaultReserveTime;
+let direReserve = defaultReserveTime;
 let heroesPerType = defaultHeroesPerType;
 let numBans = defaultNumBans;
 
-const gracePeriod = 2;
+const gracePeriod = 1;
 var timer;
 var availableHeroes;
-var radiantReserve = reserveTime;
-var direReserve = reserveTime;
 var timerState = "not_started";
 var radiantCaptain;
 var direCaptain;
@@ -46,14 +45,13 @@ function resetState(){
 	index = 0;
 	clearTimeout(timer);
 	availableHeroes = undefined;
-	radiantReserve = reserveTime;
-	direReserve = reserveTime;
+	radiantReserve = defaultReserveTime;
+	direReserve = defaultReserveTime;
 	timerState = "not_started";
 	radiantCaptain = undefined;
 	direCaptain = undefined;
 	startingFaction = defaultStartingFaction;
 	pickTime = defaultPickTime;
-	reserveTime = defaultReserveTime;
 	heroesPerType = defaultHeroesPerType;
 	numBans = defaultNumBans;
 	stopAllTimers()
@@ -63,14 +61,12 @@ io.on('connection', (socket) => {
 	
   socket.on('start', ()  => {
 	
-	if(radiantCaptain === undefined || direCaptain === undefined){
+	if(radiantCaptain === undefined || direCaptain === undefined || timerState !== "not_started"){
 		return;
 	}
 	availableHeroes = selectHeroes(heroesPerType);
 	turnOrder = getTurnOrder(startingFaction, numBans);
 	phaseOrder = getPhaseOrder(numBans);
-	console.log(turnOrder)
-	console.log(phaseOrder)
 	io.emit('start', availableHeroes);
 	if(turnOrder[index] === 'radiant'){
 		io.emit('radiant_timer_start', pickTime);
@@ -80,7 +76,7 @@ io.on('connection', (socket) => {
 		io.emit('dire_timer_start', pickTime);
 		timerState = "dire_pick";
 	}
-	io.emit('update_status', turnOrder[index], 'active');
+	io.emit('update_status', turnOrder[index], phaseOrder[index]);
 	timer = setTimeout(timerExpiration, (pickTime+gracePeriod)*1000, availableHeroes);
 	
   });
@@ -113,7 +109,6 @@ io.on('connection', (socket) => {
 
 function handlePickEvent(user_id, hero_id){
 	
-	console.log(user_id);
 	if (!validPick(user_id) || draftEnded() === true){
 		return;
 	}
@@ -149,12 +144,12 @@ function handleSettingsReq(user_id, num_heroes, num_bans, starting_side,
 		return;
 	}
 
-	console.log(num_heroes, num_bans, starting_side, reserve_time, increment)
-	heroesPerType = num_heroes;
-	numBans = num_bans;
+	heroesPerType = parseInt(num_heroes);
+	numBans = parseInt(num_bans);
 	startingFaction = starting_side;
-	reserveTime = reserve_time;
-	pickTime = increment;
+	radiantReserve = parseInt(reserve_time);
+	direReserve = parseInt(reserve_time);
+	pickTime = parseInt(increment);
 }
 
 //Only allowing captains to reset would lead to the page getting stuck all the time. 
@@ -164,7 +159,7 @@ function handleReset(user_id){
 }
 
 function timerExpiration(availableHeroes) {
-  
+	
 	switch(timerState){
 	case 'radiant_pick': 
 		if (radiantReserve > 0){
@@ -267,24 +262,15 @@ function processPick(id){
 		clearTimeout(timer);
 		stopAllTimers()
 	}
-	updateStatus(turnOrder[index]);
+	else{
+		io.emit('update_status', turnOrder[index], phaseOrder[index]);
+	}
 }
 
 function draftEnded(){
 	return index === phaseOrder.length;
 }
 
-function updateStatus(faction){
-	
-	if (faction === 'radiant'){
-		io.emit('update_status', 'radiant', 'active');
-		io.emit('update_status', 'dire', 'waiting');
-	}
-	else{
-		io.emit('update_status', 'dire', 'active');
-		io.emit('update_status', 'radiant', 'waiting');
-	}
-}
 
 function updateHeroList(id){
 	
@@ -311,7 +297,6 @@ function validPick(user_id){
 }
 
 function getTurnOrder(startingFaction, numBans){
-	console.log(startingFaction, numBans);
 	var radiantPickOrder = ['radiant', 'dire', 'dire', 'radiant', 'radiant', 
 		'dire', 'dire', 'radiant', 'radiant', 'dire'];
 	var direPickOrder = ['dire', 'radiant', 'radiant', 'dire', 'dire', 'radiant', 

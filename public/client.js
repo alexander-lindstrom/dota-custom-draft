@@ -154,13 +154,8 @@ socket.on('update_dire_captain', function(user_id){
 	document.getElementById("dire_captain").innerHTML = "Captain: " + user_id.substring(0,5);
 });
 
-socket.on('update_status', function(faction, state){
-	if(faction === 'radiant'){
-		document.getElementById("radiant_status").innerHTML = "Status: " + state;
-	}
-	else{
-		document.getElementById("dire_status").innerHTML = "Status: " + state;
-	}
+socket.on('update_status', function(faction, phase){
+	document.getElementById("draft_status").innerHTML = `Status: ${faction} ${phase}`;
 });
 
 initialState()
@@ -252,8 +247,7 @@ function resetState(){
 	document.getElementById("dire_pick").replaceChildren();
 	document.getElementById("radiant_captain").innerHTML = "Captain: none";
 	document.getElementById("dire_captain").innerHTML = "Captain: none";
-	document.getElementById("radiant_status").innerHTML = "Status: waiting";
-	document.getElementById("dire_status").innerHTML = "Status: waiting";
+	document.getElementById("draft_status").innerHTML = "Status: waiting to start";
 	document.getElementById("radiant_timer").innerHTML = "Time:";
 	document.getElementById("dire_timer").innerHTML = "Time:";
 	document.getElementById("radiant_reserve").innerHTML = "Reserve:";

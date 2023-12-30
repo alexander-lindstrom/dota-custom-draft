@@ -1,5 +1,5 @@
 Issues:
-*Timeouts are not working properly if settings have been updated.
+*130 seconds becomes 210 somehow.
 
 Future improvements:
 *Some kind of confirmation when picking/banning

@@ -18,11 +18,16 @@
 			<button type="button" id="reset" class="btn btn-secondary btn-lg">Reset</button>
 			<button type="button" id="become_captain" class="btn btn-primary btn-lg">Become captain</button>
 			<button type="button" id="copy_draft" class="btn btn-secondary btn-lg">Copy draft</button>
-			<button type="button" id="settings" class="btn btn-outline-danger btn-lg" data-toggle="modal" data-target="#settingsModal">Settings</button>
+			<button type="button" id="settings" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#settingsModal">Settings</button>
 		</div>
 	</div>
     <div class="available" id="available_heroes"></div>
 
+	<div class="status">
+		<div class="col-lg-auto" >
+			<h4 id=draft_status>Status: waiting to start</h4>
+		</div>
+	</div>
 	<div class="radiant_info">
 		<div class="row">
 			<div class="col-lg-auto">
@@ -33,9 +38,6 @@
 			</div>
 			<div class="col-lg-auto">
 			  <h4 id=radiant_timer>Time:</h4>
-			</div>
-			<div class="col-lg-auto" >
-			  <h4 id=radiant_status>Status: waiting</h4>
 			</div>
 		</div>
 		<div class="pick_info" id="radiant_ban"></div>
@@ -52,9 +54,6 @@
 			</div>
 			<div class="col-lg-auto">
 			  <h4 id=dire_timer>Time:</h4>
-			</div>
-			<div class="col-lg-auto" >
-			  <h4 id=dire_status>Status: waiting</h4>
 			</div>
 		</div>
 		<div class="pick_info" id="dire_ban"></div>

@@ -1,18 +1,8 @@
-todo.txt
+Issues:
+*Timeouts are not working properly if settings have been updated.
 
-url: http://ec2-54-244-133-92.us-west-2.compute.amazonaws.com:3000/
-
-
-todo:
-	
-	Visual improvements - how?
-	Allow captains to change some settings?
-		For example starting side(requires making it possible for dire to start), pick/reserve time, heroes per type, number of bans, etc.
-		One example: https://stackoverflow.com/questions/24949285/drop-down-list-inside-a-pop-up-window-comes-up-when-button-is-pressed
-	Confirmation when picking banning? Only if it doesnt look awful. Another option is adding a tooltip.
-		Idea: Link to page with changelog/information in tooltip.
-	
-	
-bugs:
-
-
+Future improvements:
+*Some kind of confirmation when picking/banning
+*Better way of showing whose turn it is, how many bans, picks there are and so on.
+*Allow entering a name when becoming captain
+*Support refreshing?

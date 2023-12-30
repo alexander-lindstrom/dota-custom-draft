@@ -1,8 +1,8 @@
 var socket = io();
 var radiantTimer;
 var direTimer;
-var radiantReserveTimer = 20;
-var direReserveTimer = 20;
+var radiantReserveTimer;
+var direReserveTimer;
 
 //Buttons
 var startButton = document.getElementById('start');
@@ -25,24 +25,32 @@ copyButton.addEventListener('click', function(e){
 	copyTextToClipboard(getDraftString());
 });
 
+var saveSettingsbutton = document.getElementById('save_settings_button');
+saveSettingsbutton.addEventListener('click', function(e){
+	var numHeroes = document.getElementById("settings_heroes_per_attribute").value;
+	var numBans = document.getElementById("settings_num_bans").value;
+	var startingFaction = document.getElementById("settings_starting_faction").value;
+	var reserveTime = document.getElementById("settings_reserve_time").value;
+	var increment = document.getElementById("settings_increment").value;
+	socket.emit('settings_req', socket.id, numHeroes, numBans, startingFaction,
+		reserveTime, increment);
+});
+
 function getDraftString(){
 	
 	const dire = document.getElementById("dire_pick").getElementsByTagName('*');
 	const radiant = document.getElementById("radiant_pick").getElementsByTagName('*');
 	
 	var str = "Radiant: ";
-	
 	//Indexing needs to be like this for some reason
 	for (var i = 1; i < radiant.length; i++){
 		str = str + radiant[i].id + ", ";
     }
 	
 	str = str + "\nDire: "
-	
 	for (var i = 1; i < dire.length; i++){
 		str = str + dire[i].id + ", ";
     }
-	
 	return str;
 }
 
@@ -72,9 +80,7 @@ function copyTextToClipboard(text) {
 	// Avoid flash of the white box if rendered for any reason.
 	textArea.style.background = 'transparent';
 
-
 	textArea.value = text;
-
 	document.body.appendChild(textArea);
 	textArea.focus();
 	textArea.select();
@@ -86,23 +92,9 @@ function copyTextToClipboard(text) {
 	catch (err){
 		console.log('Could not copy text to clipboard');
 	}
-
 	document.body.removeChild(textArea);
 }
 
-function openTab(evt, tabName) {
-  var i, x, tablinks;
-  x = document.getElementsByClassName("city");
-  for (i = 0; i < x.length; i++) {
-    x[i].style.display = "none";
-  }
-  tablinks = document.getElementsByClassName("tablink");
-  for (i = 0; i < x.length; i++) {
-    tablinks[i].classList.remove("w3-light-grey");
-  }
-  document.getElementById(tabName).style.display = "block";
-  evt.currentTarget.classList.add("w3-light-grey");
-}
 		
 //Event handling
 socket.on('start', function(heroes){
@@ -114,7 +106,7 @@ socket.on('reset', function(){
 });
 		
 function sendPickEvent(id){
-	socket.emit('pick', id, socket.id);
+	socket.emit('pick', socket.id, id);
 }
 		
 socket.on('pick', function(phase, faction, child_id){
@@ -162,18 +154,17 @@ socket.on('update_dire_captain', function(user_id){
 	document.getElementById("dire_captain").innerHTML = "Captain: " + user_id.substring(0,5);
 });
 
-socket.on('update_radiant_status', function(state){
-	document.getElementById("radiant_status").innerHTML = "Status: " + state;
+socket.on('update_status', function(faction, state){
+	if(faction === 'radiant'){
+		document.getElementById("radiant_status").innerHTML = "Status: " + state;
+	}
+	else{
+		document.getElementById("dire_status").innerHTML = "Status: " + state;
+	}
 });
 
-socket.on('update_dire_status', function(state){
-	document.getElementById("dire_status").innerHTML = "Status: " + state;
-});
-
-
-		
 initialState()
-		
+
 //Helper funcs - move to some other file later
 function startTimer(id, string, initialVal){
 	var timerId = setInterval(function(){
@@ -263,10 +254,10 @@ function resetState(){
 	document.getElementById("dire_captain").innerHTML = "Captain: none";
 	document.getElementById("radiant_status").innerHTML = "Status: waiting";
 	document.getElementById("dire_status").innerHTML = "Status: waiting";
-	document.getElementById("radiant_timer").innerHTML = "Time: 30";
-	document.getElementById("dire_timer").innerHTML = "Time: 30";
-	document.getElementById("radiant_reserve").innerHTML = "Reserve: 60";
-	document.getElementById("dire_reserve").innerHTML = "Reserve: 60";
+	document.getElementById("radiant_timer").innerHTML = "Time:";
+	document.getElementById("dire_timer").innerHTML = "Time:";
+	document.getElementById("radiant_reserve").innerHTML = "Reserve:";
+	document.getElementById("dire_reserve").innerHTML = "Reserve:";
 	
 	initialState()
 }

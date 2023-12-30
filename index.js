@@ -5,19 +5,30 @@ const io = require('socket.io')(http);
 const path = require('path');
 
 const port = process.env.PORT || 3000;
-const csv = require('jquery-csv');
 const fs = require('fs');
 
 const dir = path.join(__dirname, '/public');
 app.use(express.static(dir));
-const heroesPerType = 7;
-const turnOrder = getTurnOrder('radiant');
-const phaseOrder = getPhaseOrder();
-var index = 0;
-const startingFaction = 'radiant';
-const pickTime = 30;
-const reserveTime = 60;
-const gracePeriod = 2; // Easy way to handle sync/delay issues.
+
+let turnOrder;
+let phaseOrder;
+let index = 0;
+
+//Default values
+const defaultStartingFaction = 'Random';
+const defaultPickTime = 30;
+const defaultReserveTime = 210;
+const defaultHeroesPerType = 7;
+const defaultNumBans = 3;
+
+//Values that may be updated by using the settings modal
+let startingFaction = defaultStartingFaction;
+let pickTime = defaultPickTime;
+let reserveTime = defaultReserveTime;
+let heroesPerType = defaultHeroesPerType;
+let numBans = defaultNumBans;
+
+const gracePeriod = 2;
 var timer;
 var availableHeroes;
 var radiantReserve = reserveTime;
@@ -25,7 +36,6 @@ var direReserve = reserveTime;
 var timerState = "not_started";
 var radiantCaptain;
 var direCaptain;
-
 
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/index.html');
@@ -41,6 +51,11 @@ function resetState(){
 	timerState = "not_started";
 	radiantCaptain = undefined;
 	direCaptain = undefined;
+	startingFaction = defaultStartingFaction;
+	pickTime = defaultPickTime;
+	reserveTime = defaultReserveTime;
+	heroesPerType = defaultHeroesPerType;
+	numBans = defaultNumBans;
 	stopAllTimers()
 }
 
@@ -52,11 +67,22 @@ io.on('connection', (socket) => {
 		return;
 	}
 	availableHeroes = selectHeroes(heroesPerType);
-    io.emit('start', availableHeroes);
-	io.emit('radiant_timer_start', pickTime); //todo: radiant shouldn't always start
-	io.emit('update_radiant_status', 'active');
+	turnOrder = getTurnOrder(startingFaction, numBans);
+	phaseOrder = getPhaseOrder(numBans);
+	console.log(turnOrder)
+	console.log(phaseOrder)
+	io.emit('start', availableHeroes);
+	if(turnOrder[index] === 'radiant'){
+		io.emit('radiant_timer_start', pickTime);
+		timerState = "radiant_pick";
+	}
+	else{
+		io.emit('dire_timer_start', pickTime);
+		timerState = "dire_pick";
+	}
+	io.emit('update_status', turnOrder[index], 'active');
 	timer = setTimeout(timerExpiration, (pickTime+gracePeriod)*1000, availableHeroes);
-	timerState = "radiant_pick";
+	
   });
   
   socket.on('reset', (user_id)  => {
@@ -65,12 +91,18 @@ io.on('connection', (socket) => {
 	
   });
   
-  socket.on('pick', (id, user_id)  => {
-	handlePickEvent(id, user_id)
+  socket.on('pick', (user_id, id)  => {
+	handlePickEvent(user_id, id)
   });
   
   socket.on('become_captain', (user_id)  => {
 	handleCaptainReq(user_id)
+  });
+
+  socket.on('settings_req', (user_id, num_heroes, num_bans, 
+		starting_faction, reserve_time, increment)  => {
+	handleSettingsReq(user_id, num_heroes, num_bans, starting_faction,
+		reserve_time, increment);
   });
   
   socket.on('reset', (user_id)  => {
@@ -79,8 +111,9 @@ io.on('connection', (socket) => {
   
 });
 
-function handlePickEvent(hero_id, user_id){
+function handlePickEvent(user_id, hero_id){
 	
+	console.log(user_id);
 	if (!validPick(user_id) || draftEnded() === true){
 		return;
 	}
@@ -107,7 +140,25 @@ function handleCaptainReq(user_id){
 	}
 }
 
-//Only allowing captains to reset would lead to the page getting stuck all the time. For now let anyone.
+function handleSettingsReq(user_id, num_heroes, num_bans, starting_side,
+		reserve_time, increment){
+	if(timerState !== "not_started"){
+		return;
+	}
+	if(radiantCaptain !== user_id && direCaptain !== user_id){
+		return;
+	}
+
+	console.log(num_heroes, num_bans, starting_side, reserve_time, increment)
+	heroesPerType = num_heroes;
+	numBans = num_bans;
+	startingFaction = starting_side;
+	reserveTime = reserve_time;
+	pickTime = increment;
+}
+
+//Only allowing captains to reset would lead to the page getting stuck all the time. 
+//For now let anyone.
 function handleReset(user_id){
 	resetState()
 }
@@ -133,7 +184,7 @@ function timerExpiration(availableHeroes) {
 			io.emit('dire_timer_stop');
 			io.emit('dire_reserve_start', direReserve);
 			timer = setTimeout(timerExpiration, (direReserve+gracePeriod)*1000, availableHeroes);
-			return
+			return;
 		}
 		else{
 			fullTimeout();
@@ -208,9 +259,7 @@ function processPick(id){
 	const faction = turnOrder[index];
 	
 	updateHeroList(id);
-
 	io.emit('pick', phase, faction, id);
-	
 	index++;
 	if (draftEnded()){
 		timerState = "draft_ended";
@@ -228,12 +277,12 @@ function draftEnded(){
 function updateStatus(faction){
 	
 	if (faction === 'radiant'){
-		io.emit('update_radiant_status', 'active');
-		io.emit('update_dire_status', 'waiting');
+		io.emit('update_status', 'radiant', 'active');
+		io.emit('update_status', 'dire', 'waiting');
 	}
 	else{
-		io.emit('update_dire_status', 'active');
-		io.emit('update_radiant_status', 'waiting');
+		io.emit('update_status', 'dire', 'active');
+		io.emit('update_status', 'radiant', 'waiting');
 	}
 }
 
@@ -259,23 +308,35 @@ function validPick(user_id){
 	else{
 		return user_id === direCaptain;
 	}
-	return true;
 }
 
-function getTurnOrder(startingFaction){
-	
-	var turnOrder = ['radiant', 'dire', 'radiant', 'dire', 'radiant', 'dire', 'radiant', 'dire',
-		'dire', 'radiant', 'radiant', 'dire', 'dire', 'radiant', 'radiant', 'dire'];
-	if (startingFaction === 'dire'){
-		//Flip order
-		turnOrder.map(x => x = (x==='radiant') ? 'dire' : 'radiant'); // this doesn't seem to work
+function getTurnOrder(startingFaction, numBans){
+	console.log(startingFaction, numBans);
+	var radiantPickOrder = ['radiant', 'dire', 'dire', 'radiant', 'radiant', 
+		'dire', 'dire', 'radiant', 'radiant', 'dire'];
+	var direPickOrder = ['dire', 'radiant', 'radiant', 'dire', 'dire', 'radiant', 
+		'radiant', 'dire', 'dire', 'radiant'];
+	var radiantBanOrder = "radiant,dire,".repeat(numBans).replace(/,(?=[^,]*$)/, '').split(',');
+	var direBanOrder = "dire,radiant,".repeat(numBans).replace(/,(?=[^,]*$)/, '').split(',');
+	switch(startingFaction){
+		case 'Radiant':
+			return radiantBanOrder.concat(radiantPickOrder);
+		case 'Dire':
+			return direBanOrder.concat(direPickOrder);
+		case 'Random':
+			if(Math.round(Math.random())){
+				return direBanOrder.concat(direPickOrder);
+			}
+			else{
+				return radiantBanOrder.concat(radiantPickOrder);
+			}
 	}
-	return turnOrder
 }
 
-function getPhaseOrder(){
-	return ['ban', 'ban', 'ban', 'ban', 'ban', 'ban', 'pick', 'pick', 'pick', 'pick',
-		'pick', 'pick', 'pick', 'pick', 'pick', 'pick'];
+function getPhaseOrder(numBans){
+	var pickOrder = "pick,".repeat(10).replace(/,(?=[^,]*$)/, '').split(',');
+	var banOrder = "ban,".repeat(2*numBans).replace(/,(?=[^,]*$)/, '').split(',');
+	return banOrder.concat(pickOrder);
 }
 
 function selectHeroes(numPerType){

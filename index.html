@@ -29,10 +29,10 @@
 			  <h4 id=radiant_captain>Captain: none</h4>
 			</div>
 			<div class="col-lg-auto">
-			  <h4 id=radiant_reserve>Reserve: 60</h4>
+			  <h4 id=radiant_reserve>Reserve:</h4>
 			</div>
 			<div class="col-lg-auto">
-			  <h4 id=radiant_timer>Time: 30</h4>
+			  <h4 id=radiant_timer>Time:</h4>
 			</div>
 			<div class="col-lg-auto" >
 			  <h4 id=radiant_status>Status: waiting</h4>
@@ -48,10 +48,10 @@
 			  <h4 id=dire_captain>Captain: none</h4>
 			</div>
 			<div class="col-lg-auto">
-			  <h4 id=dire_reserve>Reserve: 60</h4>
+			  <h4 id=dire_reserve>Reserve:</h4>
 			</div>
 			<div class="col-lg-auto">
-			  <h4 id=dire_timer>Time: 30</h4>
+			  <h4 id=dire_timer>Time:</h4>
 			</div>
 			<div class="col-lg-auto" >
 			  <h4 id=dire_status>Status: waiting</h4>
@@ -71,12 +71,12 @@
 			</div>
 			<div class="modal-body">
 				<!-- setup form -->
-			  	<form class="alexForm">
+			  	<form class="settings_form" id="settings_form">
 
 					<div class="form-group">
-						<label for="hero_per_attr">Heroes per attribute</label>
-						<select class="form-control" id="hero_per_attr">
-						  	<option>7</option>
+						<label for="settings_heroes_per_attribute">Heroes per attribute</label>
+						<select class="form-control" id="settings_heroes_per_attribute">
+							<option value="7" selected>7</option>
 						  	<option>8</option>
 						  	<option>9</option>
 						  	<option>10</option>
@@ -84,37 +84,36 @@
 						</select>
 					</div>
 					<div class="form-group">
-						<label for="hero_nr_ban">Number of bans</label>
-						<select class="form-control" id="hero_nr_ban">
-						  	<option value="0">0</option>
-						  	<option>1</option>
+						<label for="settings_num_bans">Number of bans</label>
+						<select class="form-control" id="settings_num_bans">
+							<option>1</option>
 						  	<option>2</option>
-						  	<option>3</option>
+							<option value="3" selected>3</option>
 						 	<option>4</option>
 						</select>
 					</div>
 					<div class="form-group">
-						<label for="team_start">Number of bans</label>
-						<select class="form-control" id="team_start">
+						<label for="settings_starting_faction">Starting side</label>
+						<select class="form-control" id="settings_starting_faction">
+							<option value="Random" selected>Random</option>
 						  	<option>Radiant</option>
 						  	<option>Dire</option>
-							<option>Random</option>
 						</select>
 					</div>
 					<div class="form-group">
-						<label for="team_time_reserve">Reserve time (s)</label>
-						<select class="form-control" id="team_time_reserve">
-						  	<option>130</option>
-						  	<option>100</option>
-							<option>70</option>
+						<label for="settings_reserve_time">Reserve time (s)</label>
+						<select class="form-control" id="settings_reserve_time">
 							<option>40</option>
+							<option>70</option>
+							<option>100</option>
+							<option value="130" selected>130</option>
 						</select>
 					</div>
 					<div class="form-group">
-						<label for="team_time_pick">Increment (s)</label>
-						<select class="form-control" id="team_time_pick">
-						  	<option>20</option>
-						  	<option>30</option>
+						<label for="settings_increment">Increment (s)</label>
+						<select class="form-control" id="settings_increment">
+							<option>20</option>
+							<option value="30" selected>30</option>
 							<option>40</option>
 						</select>
 					</div>
@@ -123,7 +122,7 @@
 			</div>
 			<div class="modal-footer">
 			  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-			  <button type="button" class="btn btn-primary">Save changes</button>
+			  <button type="button" class="btn btn-primary" data-dismiss="modal" id="save_settings_button">Save changes</button>
 			</div>
 		  </div>
 		</div>

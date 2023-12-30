@@ -34,7 +34,9 @@ var timer;
 var availableHeroes;
 var timerState = "not_started";
 var radiantCaptain;
+var radaintCaptainName;
 var direCaptain;
+var direCaptainName;
 
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/index.html');
@@ -91,8 +93,8 @@ io.on('connection', (socket) => {
 	handlePickEvent(socket.id, id)
   });
   
-  socket.on('become_captain', ()  => {
-	handleCaptainReq(socket.id)
+  socket.on('become_captain', (userName)  => {
+	handleCaptainReq(socket.id, userName)
   });
 
   socket.on('settings_req', (num_heroes, num_bans, 
@@ -108,10 +110,12 @@ io.on('connection', (socket) => {
   socket.on('disconnect', ()  => {
 	if(socket.id === radiantCaptain){
 		radiantCaptain = undefined;
+		radaintCaptainName = undefined;
 		io.emit('update_radiant_captain', '');
 	}
 	else if(socket.id === direCaptain){
 		direCaptain = undefined;
+		direCaptainName = undefined;
 		io.emit('update_dire_captain', '');
 	}
   });
@@ -130,15 +134,17 @@ function handlePickEvent(user_id, hero_id){
 	}
 }
 
-function handleCaptainReq(user_id){
+function handleCaptainReq(userId, userName){
 	
 	if (radiantCaptain === undefined){
-		radiantCaptain = user_id;
-		io.emit('update_radiant_captain', user_id);
+		radiantCaptain = userId;
+		radiantCaptainName = userName;
+		io.emit('update_radiant_captain', userName);
 	}
-	else if(direCaptain === undefined && user_id !== radiantCaptain){
-		direCaptain = user_id;
-		io.emit('update_dire_captain', user_id);
+	else if(direCaptain === undefined && userId !== radiantCaptain){
+		direCaptain = userId;
+		direCaptainName = userName;
+		io.emit('update_dire_captain', userName);
 	}
 	else{
 		console.log("Captain req not accepted");

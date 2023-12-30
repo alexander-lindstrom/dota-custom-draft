@@ -15,9 +15,10 @@ stopButton.addEventListener('click', function(e){
 	socket.emit('reset');
 });
 
-var captainButton = document.getElementById('become_captain');
+var captainButton = document.getElementById('save_captain_button');
 captainButton.addEventListener('click', function(e){
-	socket.emit('become_captain');
+	var userName = document.getElementById("captain_name").value;
+	socket.emit('become_captain', userName);
 });
 
 var copyButton = document.getElementById('copy_draft');
@@ -146,12 +147,12 @@ socket.on('dire_reserve_timer_stop', function(){
 	clearInterval(direReserveTimer); 
 });
 
-socket.on('update_radiant_captain', function(user_id){
-	document.getElementById("radiant_captain").innerHTML = "Captain: " + user_id.substring(0,5);
+socket.on('update_radiant_captain', function(user_name){
+	document.getElementById("radiant_captain").innerHTML = "Captain: " + user_name;
 });
 
-socket.on('update_dire_captain', function(user_id){
-	document.getElementById("dire_captain").innerHTML = "Captain: " + user_id.substring(0,5);
+socket.on('update_dire_captain', function(user_name){
+	document.getElementById("dire_captain").innerHTML = "Captain: " + user_name;
 });
 
 socket.on('update_status', function(faction, phase){

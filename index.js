@@ -17,7 +17,7 @@ let index = 0;
 //Default values
 const defaultStartingFaction = 'Random';
 const defaultPickTime = 30;
-const defaultReserveTime = 210;
+const defaultReserveTime = 130;
 const defaultHeroesPerType = 7;
 const defaultNumBans = 3;
 

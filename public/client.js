@@ -135,7 +135,7 @@ socket.on('radiant_reserve_start', function(initialValue){
 	radiantReserveTimer = startTimer("radiant_reserve", "Reserve: ", initialValue);
 });
 
-socket.on('radiant_reserve_timer_stop', function(){
+socket.on('radiant_reserve_stop', function(){
 	clearInterval(radiantReserveTimer); 
 });
 
@@ -143,7 +143,7 @@ socket.on('dire_reserve_start', function(initialValue){
 	direReserveTimer = startTimer("dire_reserve", "Reserve: ", initialValue);
 });
 
-socket.on('dire_reserve_timer_stop', function(){
+socket.on('dire_reserve_stop', function(){
 	clearInterval(direReserveTimer); 
 });
 

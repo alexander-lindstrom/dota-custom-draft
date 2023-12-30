@@ -10,33 +10,19 @@ const fs = require('fs');
 const dir = path.join(__dirname, '/public');
 app.use(express.static(dir));
 
-let turnOrder;
-let phaseOrder;
-let index = 0;
+let order = {turn: undefined, phase: undefined, index: 0};
+const defaultSettings = {startingFaction: 'Random', pickTime: 30, radiantReserve: 130,
+	direReserve: 130, heroesPerType: 7, numBans: 3};
 
-//Default values
-const defaultStartingFaction = 'Random';
-const defaultPickTime = 30;
-const defaultReserveTime = 130;
-const defaultHeroesPerType = 7;
-const defaultNumBans = 3;
+let settings = structuredClone(defaultSettings);
 
-//Values that may be updated by using the settings modal
-let startingFaction = defaultStartingFaction;
-let pickTime = defaultPickTime;
-let radiantReserve = defaultReserveTime;
-let direReserve = defaultReserveTime;
-let heroesPerType = defaultHeroesPerType;
-let numBans = defaultNumBans;
+const initialState = {availableHeroes: undefined, timer: 'not_started', 
+	radiantCaptain: undefined, radiantCaptainName: undefined, direCaptain: undefined, 
+	direCaptainName: undefined};
+let state = structuredClone(initialState);
 
 const gracePeriod = 1;
 var timer;
-var availableHeroes;
-var timerState = "not_started";
-var radiantCaptain;
-var radaintCaptainName;
-var direCaptain;
-var direCaptainName;
 
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/index.html');
@@ -44,18 +30,10 @@ app.get('/', (req, res) => {
 
 function resetState(){
 	
-	index = 0;
+	order.index = 0;
 	clearTimeout(timer);
-	availableHeroes = undefined;
-	radiantReserve = defaultReserveTime;
-	direReserve = defaultReserveTime;
-	timerState = "not_started";
-	radiantCaptain = undefined;
-	direCaptain = undefined;
-	startingFaction = defaultStartingFaction;
-	pickTime = defaultPickTime;
-	heroesPerType = defaultHeroesPerType;
-	numBans = defaultNumBans;
+	state = structuredClone(initialState);
+	settings = structuredClone(defaultSettings);
 	stopAllTimers()
 }
 
@@ -63,23 +41,25 @@ io.on('connection', (socket) => {
 	
   socket.on('start', ()  => {
 	
-	if(radiantCaptain === undefined || direCaptain === undefined || timerState !== "not_started"){
+	if(state.radiantCaptain === undefined || state.direCaptain === undefined 
+		|| state.timer !== "not_started"){
 		return;
 	}
-	availableHeroes = selectHeroes(heroesPerType);
-	turnOrder = getTurnOrder(startingFaction, numBans);
-	phaseOrder = getPhaseOrder(numBans);
-	io.emit('start', availableHeroes);
-	if(turnOrder[index] === 'radiant'){
-		io.emit('radiant_timer_start', pickTime);
-		timerState = "radiant_pick";
+	state.availableHeroes = selectHeroes(settings.heroesPerType);
+	order.turn = getTurnOrder(settings.startingFaction, settings.numBans);
+	order.phase = getPhaseOrder(settings.numBans);
+	io.emit('start', state.availableHeroes);
+	if(order.turn[order.index] === 'radiant'){
+		io.emit('radiant_timer_start', settings.pickTime);
+		state.timer = "radiant_pick";
 	}
 	else{
-		io.emit('dire_timer_start', pickTime);
-		timerState = "dire_pick";
+		io.emit('dire_timer_start', settings.pickTime);
+		state.timer = "dire_pick";
 	}
-	io.emit('update_status', turnOrder[index], phaseOrder[index]);
-	timer = setTimeout(timerExpiration, (pickTime+gracePeriod)*1000, availableHeroes);
+	io.emit('update_status', order.turn[order.index], order.phase[order.index]);
+	timer = setTimeout(timerExpiration, (settings.pickTime+gracePeriod)*1000, 
+		state.availableHeroes);
 	
   });
   
@@ -108,14 +88,14 @@ io.on('connection', (socket) => {
   });
 
   socket.on('disconnect', ()  => {
-	if(socket.id === radiantCaptain){
-		radiantCaptain = undefined;
-		radaintCaptainName = undefined;
+	if(socket.id === state.radiantCaptain){
+		state.radiantCaptain = undefined;
+		state.radaintCaptainName = undefined;
 		io.emit('update_radiant_captain', '');
 	}
-	else if(socket.id === direCaptain){
-		direCaptain = undefined;
-		direCaptainName = undefined;
+	else if(socket.id === state.direCaptain){
+		state.direCaptain = undefined;
+		state.direCaptainName = undefined;
 		io.emit('update_dire_captain', '');
 	}
   });
@@ -129,21 +109,21 @@ function handlePickEvent(user_id, hero_id){
 	stopCurrentTimer()
 	clearTimeout(timer);
 	processPick(hero_id);
-	if (draftEnded() === false){
+	if (!draftEnded()){
 		startNewTimer();
 	}
 }
 
 function handleCaptainReq(userId, userName){
 	
-	if (radiantCaptain === undefined){
-		radiantCaptain = userId;
-		radiantCaptainName = userName;
+	if (state.radiantCaptain === undefined){
+		state.radiantCaptain = userId;
+		state.radiantCaptainName = userName;
 		io.emit('update_radiant_captain', userName);
 	}
-	else if(direCaptain === undefined && userId !== radiantCaptain){
-		direCaptain = userId;
-		direCaptainName = userName;
+	else if(state.direCaptain === undefined && userId !== state.radiantCaptain){
+		state.direCaptain = userId;
+		state.direCaptainName = userName;
 		io.emit('update_dire_captain', userName);
 	}
 	else{
@@ -153,19 +133,19 @@ function handleCaptainReq(userId, userName){
 
 function handleSettingsReq(user_id, num_heroes, num_bans, starting_side,
 		reserve_time, increment){
-	if(timerState !== "not_started"){
+	if(state.timer !== "not_started"){
 		return;
 	}
-	if(radiantCaptain !== user_id && direCaptain !== user_id){
+	if(state.radiantCaptain !== user_id && state.direCaptain !== user_id){
 		return;
 	}
 
-	heroesPerType = parseInt(num_heroes);
-	numBans = parseInt(num_bans);
-	startingFaction = starting_side;
-	radiantReserve = parseInt(reserve_time);
-	direReserve = parseInt(reserve_time);
-	pickTime = parseInt(increment);
+	settings.heroesPerType = parseInt(num_heroes);
+	settings.numBans = parseInt(num_bans);
+	settings.startingFaction = starting_side;
+	settings.radiantReserve = parseInt(reserve_time);
+	settings.direReserve = parseInt(reserve_time);
+	settings.pickTime = parseInt(increment);
 }
 
 //Only allowing captains to reset would lead to the page getting stuck all the time. 
@@ -176,13 +156,14 @@ function handleReset(user_id){
 
 function timerExpiration(availableHeroes) {
 	
-	switch(timerState){
+	switch(state.timer){
 	case 'radiant_pick': 
-		if (radiantReserve > 0){
-			timerState = "radiant_reserve";
+		if (settings.radiantReserve > 0){
+			state.timer = "radiant_reserve";
 			io.emit('radiant_timer_stop');
-			io.emit('radiant_reserve_start', radiantReserve);
-			timer = setTimeout(timerExpiration, (radiantReserve+gracePeriod)*1000, availableHeroes);
+			io.emit('radiant_reserve_start', settings.radiantReserve);
+			timer = setTimeout(timerExpiration, (settings.radiantReserve+gracePeriod)*1000,
+				availableHeroes);
 			return
 		}
 		else{
@@ -190,11 +171,12 @@ function timerExpiration(availableHeroes) {
 		}
 		break;
 	case 'dire_pick':
-		if (direReserve > 0){
-			timerState = "dire_reserve";
+		if (settings.direReserve > 0){
+			state.timer = "dire_reserve";
 			io.emit('dire_timer_stop');
-			io.emit('dire_reserve_start', direReserve);
-			timer = setTimeout(timerExpiration, (direReserve+gracePeriod)*1000, availableHeroes);
+			io.emit('dire_reserve_start', settings.direReserve);
+			timer = setTimeout(timerExpiration, (settings.direReserve+gracePeriod)*1000,
+				availableHeroes);
 			return;
 		}
 		else{
@@ -202,26 +184,24 @@ function timerExpiration(availableHeroes) {
 		}
 		break;
 	case 'radiant_reserve':
-		radiantReserve = 0;
+		settings.radiantReserve = 0;
 		fullTimeout();
 		break;
 	case 'dire_reserve':
-		
-		direReserve = 0;
+		settings.direReserve = 0;
 		fullTimeout();
 		break;
 	case 'draft_ended':
 		stopAllTimers();
 		break;
-		
 	default:
-		console.log(timerState)
+		console.log("Invalid state!")
 	}
 }
 
 function fullTimeout(){
 	
-	processPick(getRandom(availableHeroes.flat(), 1)[0])
+	processPick(getRandom(state.availableHeroes.flat(), 1)[0])
 	stopAllTimers();
 	if (draftEnded() === false){
 		startNewTimer();
@@ -230,29 +210,30 @@ function fullTimeout(){
 
 function startNewTimer(){
 	
-	if (turnOrder[index] === 'radiant'){
-		io.emit('radiant_timer_start', pickTime);
-		timerState = "radiant_pick";
+	if (order.turn[order.index] === 'radiant'){
+		io.emit('radiant_timer_start', settings.pickTime);
+		state.timer = "radiant_pick";
 	}
 	else{
-		io.emit('dire_timer_start', pickTime);
-		timerState = "dire_pick";
+		io.emit('dire_timer_start', settings.pickTime);
+		state.timer = "dire_pick";
 	}
-	timer = setTimeout(timerExpiration, (pickTime+gracePeriod)*1000, availableHeroes);
+	timer = setTimeout(timerExpiration, (settings.pickTime+gracePeriod)*1000, 
+		state.availableHeroes);
 }
 
 function stopCurrentTimer(){
 	
-	if (turnOrder[index] === 'radiant' && timerState === "radiant_pick"){
+	if (order.turn[order.index] === 'radiant' && state.timer === "radiant_pick"){
 		io.emit('radiant_timer_stop');
 	}
-	else if (turnOrder[index] === 'radiant' && timerState === "radiant_reserve"){
+	else if (order.turn[order.index] === 'radiant' && state.timer === "radiant_reserve"){
 		io.emit('radiant_reserve_stop');
 	}
-	else if (turnOrder[index] === 'dire' && timerState === "dire_pick"){
+	else if (order.turn[order.index] === 'dire' && state.timer === "dire_pick"){
 		io.emit('dire_timer_stop');
 	}
-	else if (turnOrder[index] === 'dire' && timerState === "dire_reserve"){
+	else if (order.turn[order.index] === 'dire' && state.timer === "dire_reserve"){
 		io.emit('dire_reserve_stop');
 	}
 }
@@ -266,34 +247,34 @@ function stopAllTimers(){
 
 function processPick(id){
 	
-	const phase = phaseOrder[index];
-	const faction = turnOrder[index];
+	const phase = order.phase[order.index];
+	const faction = order.turn[order.index];
 	
 	updateHeroList(id);
 	io.emit('pick', phase, faction, id);
-	index++;
+	order.index++;
 	if (draftEnded()){
-		timerState = "draft_ended";
+		state.timer = "draft_ended";
 		console.log("The draft has ended");
 		clearTimeout(timer);
 		stopAllTimers()
 	}
 	else{
-		io.emit('update_status', turnOrder[index], phaseOrder[index]);
+		io.emit('update_status', order.turn[order.index], order.phase[order.index]);
 	}
 }
 
 function draftEnded(){
-	return index === phaseOrder.length;
+	return order.index === order.phase.length;
 }
 
 
 function updateHeroList(id){
 	
 	for(var i = 0; i < 4; i++){
-		for(var j = 0; j < availableHeroes[i].length; j++){
-			if (availableHeroes[i][j] === id){
-				availableHeroes[i].splice(j,1);
+		for(var j = 0; j < state.availableHeroes[i].length; j++){
+			if (state.availableHeroes[i][j] === id){
+				state.availableHeroes[i].splice(j,1);
 				return;
 			}
 		}
@@ -302,13 +283,12 @@ function updateHeroList(id){
 }
 
 function validPick(user_id){
-	
-	const turn = turnOrder[index];
+	const turn = order.turn[order.index];
 	if (turn === 'radiant'){
-		return user_id === radiantCaptain;
+		return user_id === state.radiantCaptain;
 	}
 	else{
-		return user_id === direCaptain;
+		return user_id === state.direCaptain;
 	}
 }
 

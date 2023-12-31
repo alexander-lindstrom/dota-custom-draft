@@ -18,7 +18,8 @@ stopButton.addEventListener('click', function(e){
 var captainButton = document.getElementById('save_captain_button');
 captainButton.addEventListener('click', function(e){
 	var userName = document.getElementById("captain_name").value;
-	socket.emit('become_captain', userName);
+	var faction = document.getElementById("captain_faction").value;
+	socket.emit('become_captain', userName, faction);
 });
 
 var copyButton = document.getElementById('copy_draft');

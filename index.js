@@ -3,17 +3,16 @@ const app = express();
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
 const path = require('path');
-
 const port = process.env.PORT || 3000;
 const fs = require('fs');
-
 const dir = path.join(__dirname, '/public');
 app.use(express.static(dir));
 
-let order = {turn: undefined, phase: undefined, index: 0};
+const defaultOrder = {turn: undefined, phase: undefined, index: 0};
+let order = structuredClone(defaultOrder);
+
 const defaultSettings = {startingFaction: 'Random', pickTime: 30, radiantReserve: 130,
 	direReserve: 130, heroesPerType: 7, numBans: 3};
-
 let settings = structuredClone(defaultSettings);
 
 const initialState = {availableHeroes: undefined, timer: 'not_started', 
@@ -29,18 +28,16 @@ app.get('/', (req, res) => {
 });
 
 function resetState(){
-	
-	order.index = 0;
-	clearTimeout(timer);
+	order = structuredClone(defaultOrder);
 	state = structuredClone(initialState);
 	settings = structuredClone(defaultSettings);
+	clearTimeout(timer);
 	stopAllTimers()
 }
 
 io.on('connection', (socket) => {
-	
+
   socket.on('start', ()  => {
-	
 	if(state.radiantCaptain === undefined || state.direCaptain === undefined 
 		|| state.timer !== "not_started"){
 		return;
@@ -60,21 +57,19 @@ io.on('connection', (socket) => {
 	io.emit('update_status', order.turn[order.index], order.phase[order.index]);
 	timer = setTimeout(timerExpiration, (settings.pickTime+gracePeriod)*1000, 
 		state.availableHeroes);
-	
   });
   
   socket.on('reset', ()  => {
 	handleReset(socket.id)
 	io.emit('reset');
-	
   });
   
   socket.on('pick', (id)  => {
 	handlePickEvent(socket.id, id)
   });
   
-  socket.on('become_captain', (userName)  => {
-	handleCaptainReq(socket.id, userName)
+  socket.on('become_captain', (userName, faction)  => {
+	handleCaptainReq(socket.id, userName, faction)
   });
 
   socket.on('settings_req', (num_heroes, num_bans, 
@@ -114,20 +109,30 @@ function handlePickEvent(user_id, hero_id){
 	}
 }
 
-function handleCaptainReq(userId, userName){
+function handleCaptainReq(userId, userName, faction){
 	
-	if (state.radiantCaptain === undefined){
+	switch (faction){
+	case 'Radiant':
+		if(state.radiantCaptain){
+			console.log("Radiant already has a captain!");
+			return;
+		}
 		state.radiantCaptain = userId;
 		state.radiantCaptainName = userName;
 		io.emit('update_radiant_captain', userName);
-	}
-	else if(state.direCaptain === undefined && userId !== state.radiantCaptain){
+		break;
+	case 'Dire':
+		if(state.direCaptain){
+			console.log("Dire already has a captain!");
+			return;
+		}
 		state.direCaptain = userId;
 		state.direCaptainName = userName;
 		io.emit('update_dire_captain', userName);
-	}
-	else{
-		console.log("Captain req not accepted");
+		break;
+	default:
+		console.log("Invalid captain req!");
+		return;
 	}
 }
 

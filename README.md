@@ -5,3 +5,6 @@
 ## How to run locally
 ```npm install```  
 ```npm start```  
+
+##Requirements
+Node >= 17

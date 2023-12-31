@@ -182,7 +182,7 @@ function setImages(strHeroes, agiHeroes, intHeroes, uniHeroes){
 		elem.onclick = function(a){
 			sendPickEvent(elem.id);
 		}
-		document.getElementById("available_heroes").appendChild(elem);
+		document.getElementById("available_heroes_str").appendChild(elem);
 	});
 			
 	agiHeroes.forEach(function(e){
@@ -192,7 +192,7 @@ function setImages(strHeroes, agiHeroes, intHeroes, uniHeroes){
 		elem.onclick = function(a){
 			sendPickEvent(elem.id);
 		}
-		document.getElementById("available_heroes").appendChild(elem);
+		document.getElementById("available_heroes_agi").appendChild(elem);
 	});
 	
 	intHeroes.forEach(function(e){
@@ -202,7 +202,7 @@ function setImages(strHeroes, agiHeroes, intHeroes, uniHeroes){
 		elem.onclick = function(a){
 			sendPickEvent(elem.id);
 		}
-		document.getElementById("available_heroes").appendChild(elem);
+		document.getElementById("available_heroes_int").appendChild(elem);
 	});
 	
 	uniHeroes.forEach(function(e){
@@ -212,16 +212,24 @@ function setImages(strHeroes, agiHeroes, intHeroes, uniHeroes){
 		elem.onclick = function(a){
 			sendPickEvent(elem.id);
 		}
-		document.getElementById("available_heroes").appendChild(elem);
+		document.getElementById("available_heroes_uni").appendChild(elem);
 	});
 }
 
 function initialState(){
 	
-	var h2 = document.createElement('h4');
-    h2.innerHTML= "Available heroes" ;
-	document.getElementById("available_heroes").appendChild(h2);
-	
+	var h2 = document.createElement('h6');
+	h2.innerHTML= "Strenght";
+	document.getElementById("available_heroes_str").appendChild(h2);
+	h2 = document.createElement('h6');
+	h2.innerHTML= "Agility";
+	document.getElementById("available_heroes_agi").appendChild(h2);
+	h2 = document.createElement('h6');
+	h2.innerHTML= "Intelligence";
+	document.getElementById("available_heroes_int").appendChild(h2);
+	h2 = document.createElement('h6');
+	h2.innerHTML= "Universal";
+	document.getElementById("available_heroes_uni").appendChild(h2);
 	h2 = document.createElement('h4');
     h2.innerHTML= "Radiant bans" ;
 	document.getElementById("radiant_ban").appendChild(h2);
@@ -240,8 +248,11 @@ function initialState(){
 }
 
 function resetState(){
-	
-	document.getElementById("available_heroes").replaceChildren();
+
+	document.getElementById("available_heroes_str").replaceChildren();
+	document.getElementById("available_heroes_agi").replaceChildren();
+	document.getElementById("available_heroes_int").replaceChildren();
+	document.getElementById("available_heroes_uni").replaceChildren();
 	document.getElementById("radiant_ban").replaceChildren();
 	document.getElementById("radiant_pick").replaceChildren();
 	document.getElementById("dire_ban").replaceChildren();

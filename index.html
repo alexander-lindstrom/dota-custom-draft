@@ -21,43 +21,70 @@
 			<button type="button" id="settings" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#settingsModal">Settings</button>
 		</div>
 	</div>
-    <div class="available" id="available_heroes"></div>
+	<div class="spacer"></div>
+	<div class="row">
+		<div class="available col col-7" id="available_heroes">
+			<div class="row"><h4 id="available_heroes_header"></h4></div>
+			<div class="row">
+				<div class="col col-3" id="available_heroes_str">
 
-	<div class="status">
-		<div class="col-lg-auto" >
-			<h4 id=draft_status>Status: waiting to start</h4>
-		</div>
-	</div>
-	<div class="radiant_info">
-		<div class="row">
-			<div class="col-lg-auto">
-			  <h4 id=radiant_captain>Captain: none</h4>
-			</div>
-			<div class="col-lg-auto">
-			  <h4 id=radiant_reserve>Reserve:</h4>
-			</div>
-			<div class="col-lg-auto">
-			  <h4 id=radiant_timer>Time:</h4>
+				</div>
+				<div class="col col-3" id="available_heroes_agi">
+
+				</div>
+				<div class="col col-3" id="available_heroes_int">
+
+				</div>
+				<div class="col col-3" id="available_heroes_uni">
+
+				</div>
 			</div>
 		</div>
-		<div class="pick_info" id="radiant_ban"></div>
-		<div class="pick_info" id="radiant_pick"></div>
-	</div>
-	
-	<div class="dire_info">
-		<div class="row">
-			<div class="col-lg-auto">
-			  <h4 id=dire_captain>Captain: none</h4>
+		<div class="col col-5">
+			<div class="row">
+				<div class="status">
+					<div class="col-lg-auto" >
+						<h4 id=draft_status>Status: waiting to start</h4>
+					</div>
+				</div>
 			</div>
-			<div class="col-lg-auto">
-			  <h4 id=dire_reserve>Reserve:</h4>
-			</div>
-			<div class="col-lg-auto">
-			  <h4 id=dire_timer>Time:</h4>
+			<div class="row">
+				<div class="col col-6">
+					<div class="radiant_info">
+						<div class="row">
+							<div class="col-lg-auto">
+							<h6 id=radiant_captain>Captain: none</h6>
+							</div>
+							<div class="col-lg-auto">
+							<h6 id=radiant_reserve>Reserve:</h6>
+							</div>
+							<div class="col-lg-auto">
+							<h6 id=radiant_timer>Time:</h6>
+							</div>
+						</div>
+						<div class="col pick_info align-self-end" id="radiant_ban"></div>
+						<div class="col pick_info align-self-end" id="radiant_pick"></div>
+					</div>
+				</div>
+				<div class="col col-6">
+					<div class="dire_info">
+						<div class="row">
+							<div class="col-lg-auto">
+							<h6 id=dire_captain>Captain: none</h6>
+							</div>
+							<div class="col-lg-auto">
+							<h6 id=dire_reserve>Reserve:</h6>
+							</div>
+							<div class="col-lg-auto">
+							<h6 id=dire_timer>Time:</h6>
+							</div>
+						</div>
+						<div class="col pick_info align-self-start" id="dire_ban"></div>
+						<div class="col pick_info align-self-start" id="dire_pick"></div>
+					</div>
+				</div>
 			</div>
 		</div>
-		<div class="pick_info" id="dire_ban"></div>
-		<div class="pick_info" id="dire_pick"></div>
 	</div>
 	<div class="modal" id="captainModal" tabindex="-1" role="dialog">
 		<div class="modal-dialog" role="document">

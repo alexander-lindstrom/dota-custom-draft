@@ -1,37 +1,52 @@
 .available{
 	margin-left: 0!important;
 	margin-right: 0!important;
-	width: 40%;
-	padding-left: 2%;
-	padding-top: 2%;
+	/*width: 40%;*/
+	/*padding-left: 2%;
+	padding-top: 2%;*/
 }
 		
 .pick_info{
 	margin-left: 0!important;
 	margin-right: 0!important;
+	clear:both;
 }
 		
 img{
 	border: 1px solid #ddd;
 	border-radius: 4px;
 	padding: 5px;
-	width: 125px;
+	display: inline;
+	width: 60px !important;
+}
+#radiant_ban img, #dire_ban img,#radiant_pick img, #dire_pick img{
+	display: block;
+}
+/*#radiant_ban img{
+	float:right;
+}
+#dire_ban img{
+	float:left;
+}*/
+.spacer {
+	clear:both;
+	padding-top: 25px;
 }
 		
 .status{
-	position: absolute;
+	/*position: absolute;
 	top: 10%;
-	left: 50%;
+	left: 50%;*/
 }
 
 .radiant_info{
-	position: absolute;
+	/*position: absolute;
 	top: 20%;
-	left: 50%;
+	left: 50%;*/
 }
 
 .dire_info{
-	position: absolute;
+	/*position: absolute;
 	top: 50%;
-	left: 50%;
+	left: 50%;*/
 }

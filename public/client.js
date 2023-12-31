@@ -104,17 +104,15 @@ socket.on('start', function(heroes){
 });
 
 socket.on('reset', function(){
-	resetState()
+	resetState();
 });
 		
 function sendPickEvent(id){
 	socket.emit('pick', id);
 }
 		
-socket.on('pick', function(phase, faction, child_id){
-	const parent_id = faction + '_' + phase;
-	
-	document.getElementById(parent_id).appendChild(document.getElementById(child_id));
+socket.on('pick', function(phase, faction, childId){
+	pick(faction, phase, childId);
 });
 
 socket.on('radiant_timer_start', function(initialValue){
@@ -160,9 +158,28 @@ socket.on('update_status', function(faction, phase){
 	document.getElementById("draft_status").innerHTML = `Status: ${faction} ${phase}`;
 });
 
+socket.on('current_state', function(order, state, settings, timeLeft){
+	setupState(order, state, settings, timeLeft);
+});
+
+
+
 initialState()
 
-//Helper funcs - move to some other file later
+function pick(faction, phase, childId){
+	const parentId = faction + '_' + phase;
+	document.getElementById(parentId).appendChild(document.getElementById(childId));
+}
+
+// When a new user connects for example
+function setupPick(faction, phase, heroId){
+	const parentId = faction + '_' + phase;
+	var elem = document.createElement("img");
+	elem.src = '/assets/images/' + heroId + '.webp';
+	elem.id = heroId;
+	document.getElementById(parentId).appendChild(elem);
+}
+
 function startTimer(id, string, initialVal){
 	var timerId = setInterval(function(){
 	  if(initialVal <= 0){
@@ -217,10 +234,57 @@ function setImages(strHeroes, agiHeroes, intHeroes, uniHeroes){
 	});
 }
 
+function setupState(order, state, settings, timeLeft){
+
+	if(state.availableHeroes){
+		setImages(state.availableHeroes[0], state.availableHeroes[1], 
+			state.availableHeroes[2], state.availableHeroes[3]);
+	}
+
+	if(order.turn && order.phase){
+		var faction = order.turn[order.index];
+		var phase = order.phase[order.index];
+		document.getElementById("draft_status").innerHTML = `Status: ${faction} ${phase}`;
+
+		state.radiantPicks.forEach((e) => 
+			setupPick('radiant', 'pick', e)
+		);
+		state.radiantBans.forEach((e) => 
+			setupPick('radiant', 'ban', e)
+		);
+		state.direPicks.forEach((e) => 
+			setupPick('dire', 'pick', e)
+		);
+		state.direBans.forEach((e) => 
+			setupPick('dire', 'ban', e)
+		);
+	}
+	
+	switch(state.timer){
+		case 'not_started':
+			//No need
+			break;
+		case 'radiant_pick':
+			radiantTimer = startTimer("radiant_timer", "Timer: ", timeLeft);
+			break;
+		case 'radiant_reserve':
+			radiantReserveTimer = startTimer("radiant_reserve", "Timer: ", timeLeft);
+			break;
+		case 'dire_pick':
+			direTimer = startTimer("dire_timer", "Timer: ", timeLeft);
+			break;
+		case 'dire_reserve':
+			direReserveTimer = startTimer("dire_reserve", "Timer: ", timeLeft);
+			break;
+		default:
+			console.log("Invalid timer state!");
+	}
+}
+
 function initialState(){
 	
 	var h2 = document.createElement('h6');
-	h2.innerHTML= "Strenght";
+	h2.innerHTML= "Strength";
 	document.getElementById("available_heroes_str").appendChild(h2);
 	h2 = document.createElement('h6');
 	h2.innerHTML= "Agility";

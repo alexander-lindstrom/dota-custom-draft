@@ -17,7 +17,8 @@ let settings = structuredClone(defaultSettings);
 
 const initialState = {availableHeroes: undefined, timer: 'not_started', 
 	radiantCaptain: undefined, radiantCaptainName: undefined, direCaptain: undefined, 
-	direCaptainName: undefined};
+	direCaptainName: undefined, radiantPicks: [], radiantBans: [], direPicks: [],
+	direBans: []};
 let state = structuredClone(initialState);
 
 const gracePeriod = 1;
@@ -35,65 +36,71 @@ function resetState(){
 	stopAllTimers()
 }
 
+function sendState(userId){
+	var timeLeft = getTimeLeft(timer);
+	io.to(userId).emit('current_state', order, state, settings, timeLeft);
+}
+
 io.on('connection', (socket) => {
 
-  socket.on('start', ()  => {
-	if(state.radiantCaptain === undefined || state.direCaptain === undefined 
-		|| state.timer !== "not_started"){
-		return;
-	}
-	state.availableHeroes = selectHeroes(settings.heroesPerType);
-	order.turn = getTurnOrder(settings.startingFaction, settings.numBans);
-	order.phase = getPhaseOrder(settings.numBans);
-	io.emit('start', state.availableHeroes);
-	if(order.turn[order.index] === 'radiant'){
-		io.emit('radiant_timer_start', settings.pickTime);
-		state.timer = "radiant_pick";
-	}
-	else{
-		io.emit('dire_timer_start', settings.pickTime);
-		state.timer = "dire_pick";
-	}
-	io.emit('update_status', order.turn[order.index], order.phase[order.index]);
-	timer = setTimeout(timerExpiration, (settings.pickTime+gracePeriod)*1000, 
-		state.availableHeroes);
-  });
-  
-  socket.on('reset', ()  => {
-	handleReset(socket.id)
-	io.emit('reset');
-  });
-  
-  socket.on('pick', (id)  => {
-	handlePickEvent(socket.id, id)
-  });
-  
-  socket.on('become_captain', (userName, faction)  => {
-	handleCaptainReq(socket.id, userName, faction)
-  });
+	sendState(socket.id);
+	socket.on('start', ()  => {
+		if(state.radiantCaptain === undefined || state.direCaptain === undefined 
+			|| state.timer !== "not_started"){
+			return;
+		}
+		state.availableHeroes = selectHeroes(settings.heroesPerType);
+		order.turn = getTurnOrder(settings.startingFaction, settings.numBans);
+		order.phase = getPhaseOrder(settings.numBans);
+		io.emit('start', state.availableHeroes);
+		if(order.turn[order.index] === 'radiant'){
+			io.emit('radiant_timer_start', settings.pickTime);
+			state.timer = "radiant_pick";
+		}
+		else{
+			io.emit('dire_timer_start', settings.pickTime);
+			state.timer = "dire_pick";
+		}
+		io.emit('update_status', order.turn[order.index], order.phase[order.index]);
+		timer = setTimeout(timerExpiration, (settings.pickTime+gracePeriod)*1000, 
+			state.availableHeroes);
+	});
+	
+	socket.on('reset', ()  => {
+		handleReset(socket.id)
+		io.emit('reset');
+	});
+	
+	socket.on('pick', (id)  => {
+		handlePickEvent(socket.id, id)
+	});
+	
+	socket.on('become_captain', (userName, faction)  => {
+		handleCaptainReq(socket.id, userName, faction)
+	});
 
-  socket.on('settings_req', (num_heroes, num_bans, 
-		starting_faction, reserve_time, increment)  => {
-	handleSettingsReq(socket.id, num_heroes, num_bans, starting_faction,
-		reserve_time, increment);
-  });
-  
-  socket.on('reset', ()  => {
-	handleReset(socket.id)
-  });
+	socket.on('settings_req', (num_heroes, num_bans, 
+			starting_faction, reserve_time, increment)  => {
+		handleSettingsReq(socket.id, num_heroes, num_bans, starting_faction,
+			reserve_time, increment);
+	});
+	
+	socket.on('reset', ()  => {
+		handleReset(socket.id)
+	});
 
-  socket.on('disconnect', ()  => {
-	if(socket.id === state.radiantCaptain){
-		state.radiantCaptain = undefined;
-		state.radaintCaptainName = undefined;
-		io.emit('update_radiant_captain', '');
-	}
-	else if(socket.id === state.direCaptain){
-		state.direCaptain = undefined;
-		state.direCaptainName = undefined;
-		io.emit('update_dire_captain', '');
-	}
-  });
+	socket.on('disconnect', ()  => {
+		if(socket.id === state.radiantCaptain){
+			state.radiantCaptain = undefined;
+			state.radaintCaptainName = undefined;
+			io.emit('update_radiant_captain', '');
+		}
+		else if(socket.id === state.direCaptain){
+			state.direCaptain = undefined;
+			state.direCaptainName = undefined;
+			io.emit('update_dire_captain', '');
+		}
+	});
 });
 
 function handlePickEvent(user_id, hero_id){
@@ -157,6 +164,13 @@ function handleSettingsReq(user_id, num_heroes, num_bans, starting_side,
 //For now let anyone.
 function handleReset(user_id){
 	resetState()
+}
+
+function getTimeLeft(timeout){
+	if(!timeout){
+		return false;
+	}
+	return Math.ceil((timeout._idleStart + timeout._idleTimeout)/1000 - process.uptime());
 }
 
 function timerExpiration(availableHeroes) {
@@ -256,6 +270,7 @@ function processPick(id){
 	const faction = order.turn[order.index];
 	
 	updateHeroList(id);
+	updatePicks(id, faction, phase);
 	io.emit('pick', phase, faction, id);
 	order.index++;
 	if (draftEnded()){
@@ -266,6 +281,25 @@ function processPick(id){
 	}
 	else{
 		io.emit('update_status', order.turn[order.index], order.phase[order.index]);
+	}
+}
+
+function updatePicks(id, faction, phase){
+	if(faction === 'radiant'){
+		if(phase === 'pick'){
+			state.radiantPicks.push(id);
+		}
+		else{
+			state.radiantBans.push(id);
+		}
+	}
+	else{
+		if(phase === 'pick'){
+			state.direPicks.push(id);
+		}
+		else{
+			state.direBans.push(id);
+		}
 	}
 }
 

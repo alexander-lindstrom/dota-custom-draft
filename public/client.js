@@ -259,6 +259,15 @@ function setupState(order, state, settings, timeLeft){
 			setupPick('dire', 'ban', e)
 		);
 	}
+
+	if(state.radiantCaptainName){
+		document.getElementById("radiant_captain").innerHTML = "Captain: " +
+			state.radiantCaptainName;
+	}
+	if(state.direCaptainName){
+		document.getElementById("dire_captain").innerHTML = "Captain: " +
+			state.direCaptainName;
+	}
 	
 	switch(state.timer){
 		case 'not_started':

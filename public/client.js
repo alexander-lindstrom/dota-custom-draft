@@ -53,7 +53,7 @@ function getDraftString(){
 	for (var i = 1; i < dire.length; i++){
 		str = str + dire[i].id + ", ";
     }
-	return str;
+	return str.replace(/,(?=[^,]*$)/, '');
 }
 
 function copyTextToClipboard(text) {

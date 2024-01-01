@@ -280,6 +280,7 @@ function processPick(id){
 		console.log("The draft has ended");
 		clearTimeout(timer);
 		stopAllTimers()
+		io.emit('update_status', 'draft ended', '');
 	}
 	else{
 		io.emit('update_status', order.turn[order.index], order.phase[order.index]);

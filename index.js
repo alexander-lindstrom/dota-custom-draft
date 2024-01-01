@@ -92,10 +92,12 @@ io.on('connection', (socket) => {
 	socket.on('disconnect', ()  => {
 		if(socket.id === state.radiantCaptain){
 			state.radiantCaptain = undefined;
-			state.radaintCaptainName = undefined;
+			state.radiantCaptainName = undefined;
 			io.emit('update_radiant_captain', '');
 		}
-		else if(socket.id === state.direCaptain){
+		//When debugging it can be useful to be captain for both teams. So check dire
+		//even if radiant was already a match.
+		if(socket.id === state.direCaptain){
 			state.direCaptain = undefined;
 			state.direCaptainName = undefined;
 			io.emit('update_dire_captain', '');
@@ -306,7 +308,6 @@ function updatePicks(id, faction, phase){
 function draftEnded(){
 	return order.index === order.phase.length;
 }
-
 
 function updateHeroList(id){
 	

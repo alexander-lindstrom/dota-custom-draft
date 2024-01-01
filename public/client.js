@@ -162,8 +162,6 @@ socket.on('current_state', function(order, state, settings, timeLeft){
 	setupState(order, state, settings, timeLeft);
 });
 
-
-
 initialState()
 
 function pick(faction, phase, childId){

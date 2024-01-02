@@ -166,7 +166,9 @@ initialState()
 
 function pick(faction, phase, childId){
 	const parentId = faction + '_' + phase;
-	document.getElementById(parentId).appendChild(document.getElementById(childId));
+	var childElement = document.getElementById(childId);
+	childElement.onclick = null;
+	document.getElementById(parentId).appendChild(childElement);
 }
 
 // When a new user connects for example

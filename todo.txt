@@ -4,6 +4,3 @@ Issues:
 Future improvements:
 *Some kind of confirmation when picking/banning
 *Better way of showing whose turn it is, how many bans, picks there are and so on.
-*Support refreshing/new users connecting after draft has started. 
-    The server would send the full state to the client that has just connected.
-    So the client initial state must be dynamically constructed.

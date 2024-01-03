@@ -348,6 +348,8 @@ function resetState(){
 	document.getElementById("radiant_pick").replaceChildren();
 	document.getElementById("dire_ban").replaceChildren();
 	document.getElementById("dire_pick").replaceChildren();
+	document.getElementById("highlighted_hero_img").replaceChildren();
+	document.getElementById("highlighted_hero_text").replaceChildren();
 	document.getElementById("radiant_captain").innerHTML = "Captain: none";
 	document.getElementById("dire_captain").innerHTML = "Captain: none";
 	document.getElementById("draft_status").innerHTML = "Status: waiting to start";

@@ -5,7 +5,6 @@ const io = require('socket.io')(http);
 const path = require('path');
 const port = process.env.PORT || 3000;
 const fs = require('fs');
-const { availableParallelism } = require('os');
 const dir = path.join(__dirname, '/public');
 app.use(express.static(dir));
 

@@ -29,7 +29,7 @@ img{
 	border-radius: 4px;
 	padding: 5px;
 	display: inline;
-	width: 60px !important;
+	width: 100px !important;
 }
 #radiant_ban img, #dire_ban img,#radiant_pick img, #dire_pick img{
 	display: block;
@@ -61,4 +61,8 @@ img{
 	/*position: absolute;
 	top: 50%;
 	left: 50%;*/
+}
+
+.modal{
+	color:#000
 }

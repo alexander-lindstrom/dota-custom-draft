@@ -41,7 +41,6 @@ saveSettingsbutton.addEventListener('click', function(e){
 var selectHeroButton = document.getElementById('select_hero_button');
 selectHeroButton.addEventListener('click', function(e){
 	var heroId = document.getElementById('highlighted_hero_img').children[0].id.split(':')[1];
-	console.log(heroId);
 	sendPickEvent(heroId);
 });
 
@@ -204,7 +203,9 @@ function updateHighlightedHero(heroId){
 	newChild.src = '/assets/images/' + heroId + '.webp';
 	newChild.id = "highlighted:" + heroId;
 	document.getElementById("highlighted_hero_img").replaceChildren(newChild);
-	document.getElementById("highlighted_hero_text").replaceChildren(heroId);
+	var name = heroId.replace(/_/g," ");
+	name = name.charAt(0).toUpperCase() + name.slice(1);
+	document.getElementById("highlighted_hero_text").replaceChildren(name);
 }
 
 function setImages(strHeroes, agiHeroes, intHeroes, uniHeroes){

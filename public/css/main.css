@@ -1,6 +1,14 @@
+html {
+		background-color: #000;
+		height: 100%;
+		
+}
 body {
-	background-color: #fff;
+	color: #FFF !important;
+	height: 100%;
 	font-family: sans-serif;
+	background: rgb(0,0,0);
+	background: linear-gradient(90deg, rgba(0,0,0,1) 0%, rgba(255,255,255,0.3981967787114846) 100%);
 }
 .available{
 	margin-left: 0!important;

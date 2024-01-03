@@ -5,6 +5,7 @@ const io = require('socket.io')(http);
 const path = require('path');
 const port = process.env.PORT || 3000;
 const fs = require('fs');
+const { availableParallelism } = require('os');
 const dir = path.join(__dirname, '/public');
 app.use(express.static(dir));
 
@@ -107,7 +108,7 @@ io.on('connection', (socket) => {
 
 function handlePickEvent(user_id, hero_id){
 	
-	if (!validPick(user_id) || draftEnded() === true){
+	if (!validPick(user_id, hero_id) || draftEnded() === true){
 		return;
 	}
 	stopCurrentTimer()
@@ -323,14 +324,19 @@ function updateHeroList(id){
 	console.log("Hero not found when updating the list - something is wrong")
 }
 
-function validPick(user_id){
+function validPick(user_id, hero_id){
 	const turn = order.turn[order.index];
 	if (turn === 'radiant'){
-		return user_id === state.radiantCaptain;
+		return user_id === state.radiantCaptain && heroAvailable(hero_id);
 	}
 	else{
-		return user_id === state.direCaptain;
+		return user_id === state.direCaptain && heroAvailable(hero_id);
 	}
+}
+
+function heroAvailable(hero_id){
+	var arr = state.availableHeroes.flat(1);
+	return arr.includes(hero_id);
 }
 
 function getTurnOrder(startingFaction, numBans){

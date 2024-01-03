@@ -38,6 +38,13 @@ saveSettingsbutton.addEventListener('click', function(e){
 		reserveTime, increment);
 });
 
+var selectHeroButton = document.getElementById('select_hero_button');
+selectHeroButton.addEventListener('click', function(e){
+	var heroId = document.getElementById('highlighted_hero_img').children[0].id.split(':')[1];
+	console.log(heroId);
+	sendPickEvent(heroId);
+});
+
 function getDraftString(){
 	
 	const dire = document.getElementById("dire_pick").getElementsByTagName('*');
@@ -191,6 +198,15 @@ function startTimer(id, string, initialVal){
 	return timerId;
 }
 
+function updateHighlightedHero(heroId){
+
+	var newChild = document.createElement("img");		
+	newChild.src = '/assets/images/' + heroId + '.webp';
+	newChild.id = "highlighted:" + heroId;
+	document.getElementById("highlighted_hero_img").replaceChildren(newChild);
+	document.getElementById("highlighted_hero_text").replaceChildren(heroId);
+}
+
 function setImages(strHeroes, agiHeroes, intHeroes, uniHeroes){
 		
 	strHeroes.forEach(function(e){
@@ -198,7 +214,7 @@ function setImages(strHeroes, agiHeroes, intHeroes, uniHeroes){
 		elem.src = '/assets/images/' + e + '.webp';
 		elem.id = e;
 		elem.onclick = function(a){
-			sendPickEvent(elem.id);
+			updateHighlightedHero(elem.id);
 		}
 		document.getElementById("available_heroes_str").appendChild(elem);
 	});
@@ -208,7 +224,7 @@ function setImages(strHeroes, agiHeroes, intHeroes, uniHeroes){
 		elem.src = '/assets/images/' + e + '.webp';
 		elem.id = e;
 		elem.onclick = function(a){
-			sendPickEvent(elem.id);
+			updateHighlightedHero(elem.id);
 		}
 		document.getElementById("available_heroes_agi").appendChild(elem);
 	});
@@ -218,7 +234,7 @@ function setImages(strHeroes, agiHeroes, intHeroes, uniHeroes){
 		elem.src = '/assets/images/' + e + '.webp';
 		elem.id = e;
 		elem.onclick = function(a){
-			sendPickEvent(elem.id);
+			updateHighlightedHero(elem.id);
 		}
 		document.getElementById("available_heroes_int").appendChild(elem);
 	});
@@ -228,7 +244,7 @@ function setImages(strHeroes, agiHeroes, intHeroes, uniHeroes){
 		elem.src = '/assets/images/' + e + '.webp';
 		elem.id = e;
 		elem.onclick = function(a){
-			sendPickEvent(elem.id);
+			updateHighlightedHero(elem.id);
 		}
 		document.getElementById("available_heroes_uni").appendChild(elem);
 	});

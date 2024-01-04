@@ -168,6 +168,10 @@ socket.on('settings_update', function(settings){
 	updateSettingsModal(settings);
 });
 
+socket.on('current_state', function(order, state, settings, timeLeft){
+	setupState(order, state, settings, timeLeft);
+});
+
 socket.on('update_status', function(faction, phase){
 	document.getElementById("draft_status").innerHTML = `Status: ${faction} ${phase}`;
 });

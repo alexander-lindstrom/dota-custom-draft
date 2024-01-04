@@ -67,3 +67,9 @@ img{
 .modal{
 	color:#000
 }
+
+.heroHighlight{
+	position: absolute;
+	top: 60%;
+	left: 50%;
+}

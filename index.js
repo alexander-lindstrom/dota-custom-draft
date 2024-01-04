@@ -160,6 +160,7 @@ function handleSettingsReq(user_id, num_heroes, num_bans, starting_side,
 	settings.radiantReserve = parseInt(reserve_time);
 	settings.direReserve = parseInt(reserve_time);
 	settings.pickTime = parseInt(increment);
+	io.emit('settings_update', settings);
 }
 
 //Only allowing captains to reset would lead to the page getting stuck all the time. 

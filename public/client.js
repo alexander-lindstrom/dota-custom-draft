@@ -164,8 +164,12 @@ socket.on('update_status', function(faction, phase){
 	document.getElementById("draft_status").innerHTML = `Status: ${faction} ${phase}`;
 });
 
-socket.on('current_state', function(order, state, settings, timeLeft){
-	setupState(order, state, settings, timeLeft);
+socket.on('settings_update', function(settings){
+	updateSettingsModal(settings);
+});
+
+socket.on('update_status', function(faction, phase){
+	document.getElementById("draft_status").innerHTML = `Status: ${faction} ${phase}`;
 });
 
 initialState()
@@ -251,6 +255,14 @@ function setImages(strHeroes, agiHeroes, intHeroes, uniHeroes){
 	});
 }
 
+function updateSettingsModal(settings){
+	document.getElementById("settings_heroes_per_attribute").value = settings.heroesPerType;
+	document.getElementById("settings_num_bans").value = settings.numBans;
+	document.getElementById("settings_starting_faction").value = settings.startingFaction;
+	document.getElementById("settings_reserve_time").value = settings.radiantReserve;
+	document.getElementById("settings_increment").value = settings.pickTime;
+}
+
 function setupState(order, state, settings, timeLeft){
 
 	if(state.availableHeroes){
@@ -276,6 +288,8 @@ function setupState(order, state, settings, timeLeft){
 			setupPick('dire', 'ban', e)
 		);
 	}
+
+	updateSettingsModal(settings);
 
 	if(state.radiantCaptainName){
 		document.getElementById("radiant_captain").innerHTML = "Captain: " +

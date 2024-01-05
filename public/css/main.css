@@ -1,7 +1,9 @@
 html {
 		background-color: #000;
 		height: 100%;
-		
+		padding-left:10px;
+		padding-right:10px;
+		overflow:hidden;
 }
 body {
 	color: #FFF !important;
@@ -28,7 +30,7 @@ body {
 img{
 	border: 1px solid #ddd;
 	border-radius: 4px;
-	padding: 5px;
+	padding: 2px;
 	display: inline;
 	width: 100px !important;
 }
@@ -38,7 +40,15 @@ img{
 	display:block;
 	border : 2px;
 	width: 100px !important;
+	margin:3px;
 }
+.img_holder_ban img, .img_holder_pick img{
+	border : none;
+}
+.img_holder_ban img {
+	filter: grayscale(100%);
+}
+
 .img_holder_ban {
 	border: 1px solid red;
 	border-radius: 4px;
@@ -47,8 +57,17 @@ img{
 	border: 1px solid green;
 	border-radius: 4px;
 }
-.radiant_ban, .radiant_pick {
+#radiant_ban {
+	padding-left :40%;
 	text-align: right;
+}
+#radiant_pick {
+	padding-left :30%;
+	text-align: right;
+}
+#radiant_ban img, .img_holder_ban,#dire_ban img{
+	min-height:45px;
+	width:75px !important;
 }
 #radiant_ban img, #dire_ban img,#radiant_pick img, #dire_pick img{
 	display: block;
@@ -94,4 +113,7 @@ img{
 
 .highlight{
 	opacity: 0.5;
+}
+#select_hero_button{
+	width: 100%;
 }

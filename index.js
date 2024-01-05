@@ -274,7 +274,7 @@ function processPick(id){
 	
 	updateHeroList(id);
 	updatePicks(id, faction, phase);
-	io.emit('pick', phase, faction, id);
+	io.emit('pick', phase, faction, id, order.index, settings.numBans);
 	order.index++;
 	if (draftEnded()){
 		state.timer = "draft_ended";

@@ -117,8 +117,8 @@ function sendPickEvent(id){
 	socket.emit('pick', id);
 }
 		
-socket.on('pick', function(phase, faction, childId){
-	pick(faction, phase, childId);
+socket.on('pick', function(phase, faction, childId, index, numBans){
+	pick(faction, phase, childId, index, numBans);
 });
 
 socket.on('radiant_timer_start', function(initialValue){
@@ -166,6 +166,7 @@ socket.on('update_status', function(faction, phase){
 
 socket.on('settings_update', function(settings){
 	updateSettingsModal(settings);
+	updateBanPlaceholders(settings.numBans);
 });
 
 socket.on('current_state', function(order, state, settings, timeLeft){
@@ -178,16 +179,25 @@ socket.on('update_status', function(faction, phase){
 
 initialState()
 
-function pick(faction, phase, childId){
-	const parentId = faction + '_' + phase;
-	var childElement = document.getElementById(childId);
+function pick(faction, phase, heroId, index, numBans){
+
+	if(phase === 'pick'){
+		index -= numBans*2;
+	}
+	const parentId = faction + '_' + phase + '_' + Math.floor(index/2);
+
+	var childElement = document.getElementById(heroId);
 	childElement.onclick = null;
+	console.log(parentId)
 	document.getElementById(parentId).appendChild(childElement);
 }
 
 // When a new user connects for example
-function setupPick(faction, phase, heroId){
-	const parentId = faction + '_' + phase;
+function setupPick(faction, phase, heroId, index, numBans){
+
+	console.log(faction, phase, heroId, index, numBans)
+	const parentId = faction + '_' + phase + '_' + index;
+	console.log(parentId)
 	var elem = document.createElement("img");
 	elem.src = '/assets/images/' + heroId + '.webp';
 	elem.id = heroId;
@@ -267,6 +277,26 @@ function updateSettingsModal(settings){
 	document.getElementById("settings_increment").value = settings.pickTime;
 }
 
+function updateBanPlaceholders(numBans){
+
+	let radiant = document.getElementById("radiant_ban");
+	radiant.replaceChildren();
+	let dire = document.getElementById("dire_ban");
+	dire.replaceChildren();
+
+	for(let i = 0; i < numBans; i++) {
+		let ri = document.createElement("div");
+		ri.setAttribute("class", "img_holder_ban");
+		ri.setAttribute("id", "radiant_ban_" + i);
+		radiant.appendChild(ri);
+
+		let di = document.createElement("div");
+		di.setAttribute("class", "img_holder_ban");
+		di.setAttribute("id", "dire_ban_" + i);
+		dire.appendChild(di);
+	}
+}
+
 function setupState(order, state, settings, timeLeft){
 
 	if(state.availableHeroes){
@@ -274,23 +304,30 @@ function setupState(order, state, settings, timeLeft){
 			state.availableHeroes[2], state.availableHeroes[3]);
 	}
 
+	updateBanPlaceholders(settings.numBans);
+
 	if(order.turn && order.phase){
 		var faction = order.turn[order.index];
 		var phase = order.phase[order.index];
-		document.getElementById("draft_status").innerHTML = `Status: ${faction} ${phase}`;
+		if(!faction || !phase){
+			document.getElementById("draft_status").innerHTML = "Status: draft ended";
+		}
+		else{
+			document.getElementById("draft_status").innerHTML = `Status: ${faction} ${phase}`;
+		}
 
-		state.radiantPicks.forEach((e) => 
-			setupPick('radiant', 'pick', e)
-		);
-		state.radiantBans.forEach((e) => 
-			setupPick('radiant', 'ban', e)
-		);
-		state.direPicks.forEach((e) => 
-			setupPick('dire', 'pick', e)
-		);
-		state.direBans.forEach((e) => 
-			setupPick('dire', 'ban', e)
-		);
+		for(let i = 0; i < state.radiantPicks.length; i++){
+			setupPick('radiant', 'pick', state.radiantPicks[i], i, settings.numBans);
+		}
+		for(let i = 0; i < state.radiantBans.length; i++){
+			setupPick('radiant', 'ban', state.radiantBans[i], i, settings.numBans);
+		}
+		for(let i = 0; i < state.direPicks.length; i++){
+			setupPick('dire', 'pick', state.direPicks[i], i, settings.numBans);
+		}
+		for(let i = 0; i < state.direBans.length; i++){
+			setupPick('dire', 'ban', state.direBans[i], i, settings.numBans);
+		}
 	}
 
 	updateSettingsModal(settings);
@@ -325,6 +362,26 @@ function setupState(order, state, settings, timeLeft){
 	}
 }
 
+function setPickPlaceHolders(){
+
+	let radiant = document.getElementById("radiant_pick");
+	radiant.replaceChildren();
+	let dire = document.getElementById("dire_pick");
+	dire.replaceChildren();
+
+	for(let i = 0; i < 5; i++) {
+		let ri = document.createElement("div");
+		ri.setAttribute("class", "img_holder_pick");
+		ri.setAttribute("id", "radiant_pick_" + i);
+		radiant.appendChild(ri);
+
+		let di = document.createElement("div");
+		di.setAttribute("class", "img_holder_pick");
+		di.setAttribute("id", "dire_pick_" + i);
+		dire.appendChild(di);
+	}
+}
+
 function initialState(){
 	
 	var h2 = document.createElement('h6');
@@ -339,6 +396,7 @@ function initialState(){
 	h2 = document.createElement('h6');
 	h2.innerHTML= "Universal";
 	document.getElementById("available_heroes_uni").appendChild(h2);
+
 	h2 = document.createElement('h4');
     h2.innerHTML= "Radiant bans" ;
 	document.getElementById("radiant_ban").appendChild(h2);
@@ -354,6 +412,10 @@ function initialState(){
 	h2 = document.createElement('h4');
     h2.innerHTML= "Dire picks" ;
 	document.getElementById("dire_pick").appendChild(h2);
+
+	let numBans = document.getElementById("settings_num_bans").value;
+	updateBanPlaceholders(numBans);
+	setPickPlaceHolders();
 }
 
 function resetState(){

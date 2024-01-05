@@ -91,3 +91,7 @@ img{
 	top: 60%;
 	left: 50%;
 }
+
+.highlight{
+	opacity: 0.5;
+}

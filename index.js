@@ -52,7 +52,7 @@ io.on('connection', (socket) => {
 		state.availableHeroes = selectHeroes(settings.heroesPerType);
 		order.turn = getTurnOrder(settings.startingFaction, settings.numBans);
 		order.phase = getPhaseOrder(settings.numBans);
-		io.emit('start', state.availableHeroes);
+		io.emit('start', state.availableHeroes, order, settings);
 		if(order.turn[order.index] === 'radiant'){
 			io.emit('radiant_timer_start', settings.pickTime);
 			state.timer = "radiant_pick";
@@ -274,7 +274,7 @@ function processPick(id){
 	
 	updateHeroList(id);
 	updatePicks(id, faction, phase);
-	io.emit('pick', phase, faction, id, order.index, settings.numBans);
+	io.emit('pick', order, settings, id);
 	order.index++;
 	if (draftEnded()){
 		state.timer = "draft_ended";

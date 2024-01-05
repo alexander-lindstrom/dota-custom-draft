@@ -3,6 +3,7 @@ var radiantTimer;
 var direTimer;
 var radiantReserveTimer;
 var direReserveTimer;
+var currHLParent;
 
 //Buttons
 var startButton = document.getElementById('start');
@@ -40,8 +41,10 @@ saveSettingsbutton.addEventListener('click', function(e){
 
 var selectHeroButton = document.getElementById('select_hero_button');
 selectHeroButton.addEventListener('click', function(e){
-	var heroId = document.getElementById('highlighted_hero_img').children[0].id.split(':')[1];
-	sendPickEvent(heroId);
+	if(currHLParent){
+		let heroId = document.getElementById(currHLParent).childNodes[0].id.split(':')[1];
+		sendPickEvent(heroId);
+	}
 });
 
 function getDraftString(){
@@ -103,22 +106,22 @@ function copyTextToClipboard(text) {
 	document.body.removeChild(textArea);
 }
 
-		
+function sendPickEvent(id){
+	socket.emit('pick', id);
+}
+
 //Event handling
-socket.on('start', function(heroes){
+socket.on('start', function(heroes, order, settings){
 	setImages(heroes[0], heroes[1], heroes[2], heroes[3]);
+	currHLParent = getHLP(order, settings, 0);
 });
 
 socket.on('reset', function(){
 	resetState();
 });
 		
-function sendPickEvent(id){
-	socket.emit('pick', id);
-}
-		
-socket.on('pick', function(phase, faction, childId, index, numBans){
-	pick(faction, phase, childId, index, numBans);
+socket.on('pick', function(order, settings, heroId){
+	pick(order, settings, heroId);
 });
 
 socket.on('radiant_timer_start', function(initialValue){
@@ -179,25 +182,36 @@ socket.on('update_status', function(faction, phase){
 
 initialState()
 
-function pick(faction, phase, heroId, index, numBans){
-
-	if(phase === 'pick'){
-		index -= numBans*2;
-	}
-	const parentId = faction + '_' + phase + '_' + Math.floor(index/2);
+function pick(order, settings, heroId){
 
 	var childElement = document.getElementById(heroId);
 	childElement.onclick = null;
-	console.log(parentId)
-	document.getElementById(parentId).appendChild(childElement);
+	document.getElementById(currHLParent).replaceChildren(childElement);
+	currHLParent = getHLP(order, settings, 1);
+}
+
+function getHLP(order, settings, increment){
+
+	if(!order || !order.turn || !order.phase){
+		return null;
+	}
+	let index = order.index + increment;
+	if(index >= 5*2 + settings.numBans * 2){
+		return null;
+	}
+	let phase = order.phase[index];
+	let faction = order.turn[index];
+	if(phase === 'pick'){
+		index -= 2*settings.numBans;
+	}
+	let id = Math.floor(index/2);
+	return `${faction}_${phase}_${id}`;
 }
 
 // When a new user connects for example
 function setupPick(faction, phase, heroId, index, numBans){
 
-	console.log(faction, phase, heroId, index, numBans)
 	const parentId = faction + '_' + phase + '_' + index;
-	console.log(parentId)
 	var elem = document.createElement("img");
 	elem.src = '/assets/images/' + heroId + '.webp';
 	elem.id = heroId;
@@ -220,14 +234,17 @@ function updateHighlightedHero(heroId){
 	var newChild = document.createElement("img");		
 	newChild.src = '/assets/images/' + heroId + '.webp';
 	newChild.id = "highlighted:" + heroId;
-	document.getElementById("highlighted_hero_img").replaceChildren(newChild);
-	var name = heroId.replace(/_/g," ");
-	name = name.charAt(0).toUpperCase() + name.slice(1);
-	document.getElementById("highlighted_hero_text").replaceChildren(name);
+	newChild.setAttribute("class", "highlight");
+	currHighlightId = newChild.id;
+
+	var parent = document.getElementById(currHLParent);
+	if(parent){
+		parent.replaceChildren(newChild);
+	}
 }
 
 function setImages(strHeroes, agiHeroes, intHeroes, uniHeroes){
-		
+	
 	strHeroes.forEach(function(e){
 		var elem = document.createElement("img");		
 		elem.src = '/assets/images/' + e + '.webp';
@@ -305,6 +322,7 @@ function setupState(order, state, settings, timeLeft){
 	}
 
 	updateBanPlaceholders(settings.numBans);
+	currHLParent = getHLP(order, settings, 0);
 
 	if(order.turn && order.phase){
 		var faction = order.turn[order.index];
@@ -428,8 +446,6 @@ function resetState(){
 	document.getElementById("radiant_pick").replaceChildren();
 	document.getElementById("dire_ban").replaceChildren();
 	document.getElementById("dire_pick").replaceChildren();
-	document.getElementById("highlighted_hero_img").replaceChildren();
-	document.getElementById("highlighted_hero_text").replaceChildren();
 	document.getElementById("radiant_captain").innerHTML = "Captain: none";
 	document.getElementById("dire_captain").innerHTML = "Captain: none";
 	document.getElementById("draft_status").innerHTML = "Status: waiting to start";

@@ -1,8 +1,3 @@
 Issues:
 
-
 Future improvements:
-*Add placeholder image/box/whatever where bans/picks will go.
-    Highlighted hero goes in the next placeholder to be filled
-*Better way of showing whose turn it is, how many bans, picks there are and so on.
-*Some tooltips for the less obvious actions.

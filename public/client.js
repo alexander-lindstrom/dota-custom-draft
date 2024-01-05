@@ -11,8 +11,8 @@ startButton.addEventListener('click', function(e){
 	socket.emit('start');
 });
 
-var stopButton = document.getElementById('reset');
-stopButton.addEventListener('click', function(e){
+var resetButton = document.getElementById('reset');
+resetButton.addEventListener('click', function(e){
 	socket.emit('reset');
 });
 
@@ -116,8 +116,8 @@ socket.on('start', function(heroes, order, settings){
 	currHLParent = getHLP(order, settings, 0);
 });
 
-socket.on('reset', function(){
-	resetState();
+socket.on('reset', function(settings){
+	resetState(settings);
 });
 		
 socket.on('pick', function(order, settings, heroId){
@@ -436,7 +436,7 @@ function initialState(){
 	setPickPlaceHolders();
 }
 
-function resetState(){
+function resetState(settings){
 
 	document.getElementById("available_heroes_str").replaceChildren();
 	document.getElementById("available_heroes_agi").replaceChildren();
@@ -453,6 +453,7 @@ function resetState(){
 	document.getElementById("dire_timer").innerHTML = "Time:";
 	document.getElementById("radiant_reserve").innerHTML = "Reserve:";
 	document.getElementById("dire_reserve").innerHTML = "Reserve:";
+	updateSettingsModal(settings)
 	
 	initialState()
 }

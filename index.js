@@ -68,7 +68,7 @@ io.on('connection', (socket) => {
 	
 	socket.on('reset', ()  => {
 		handleReset(socket.id)
-		io.emit('reset');
+		io.emit('reset', settings);
 	});
 	
 	socket.on('pick', (id)  => {

@@ -1,8 +1,8 @@
 ﻿## Dota 2 draft simulator
 
- The main motivation is the fact that there are only 7 heroes per attribute in captrains draft. Having 2-4 more and the options to change the number of bans would be nice.
+ Mostly motivated by only having  7 heroes per attribute in captrains draft. 
 
-## How to run locally
+## Running locally
 ```npm install```  
 ```npm start```  
 

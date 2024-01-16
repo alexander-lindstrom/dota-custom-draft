@@ -21,7 +21,7 @@ const initialState = {availableHeroes: undefined, timer: 'not_started',
 	direBans: []};
 let state = structuredClone(initialState);
 
-const gracePeriod = 1;
+const gracePeriod = 2;
 var timer;
 
 app.get('/', (req, res) => {

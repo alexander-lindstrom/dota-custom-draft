@@ -163,10 +163,11 @@ function handleSettingsReq(user_id, num_heroes, num_bans, starting_side,
 	io.emit('settings_update', settings);
 }
 
-//Only allowing captains to reset would lead to the page getting stuck all the time. 
-//For now let anyone.
-function handleReset(user_id){
-	resetState()
+
+function handleReset(userId){
+	if(userId === state.radiantCaptain || userId === state.direCaptain){
+		resetState();
+	}
 }
 
 function getTimeLeft(timeout){

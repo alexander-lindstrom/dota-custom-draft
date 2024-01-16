@@ -11,8 +11,8 @@ app.use(express.static(dir));
 const defaultOrder = {turn: undefined, phase: undefined, index: 0};
 let order = structuredClone(defaultOrder);
 
-const defaultSettings = {startingFaction: 'Random', pickTime: 30, radiantReserve: 130,
-	direReserve: 130, heroesPerType: 7, numBans: 3};
+const defaultSettings = {startingFaction: 'Random', pickTime: 30, radiantReserve: 60,
+	direReserve: 130, heroesPerType: 9, numBans: 2};
 let settings = structuredClone(defaultSettings);
 
 const initialState = {availableHeroes: undefined, timer: 'not_started', 

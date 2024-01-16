@@ -67,8 +67,7 @@ io.on('connection', (socket) => {
 	});
 	
 	socket.on('reset', ()  => {
-		handleReset(socket.id)
-		io.emit('reset', settings);
+		handleReset(socket.id);
 	});
 	
 	socket.on('pick', (id)  => {
@@ -83,10 +82,6 @@ io.on('connection', (socket) => {
 			starting_faction, reserve_time, increment)  => {
 		handleSettingsReq(socket.id, num_heroes, num_bans, starting_faction,
 			reserve_time, increment);
-	});
-	
-	socket.on('reset', ()  => {
-		handleReset(socket.id)
 	});
 
 	socket.on('disconnect', ()  => {
@@ -167,6 +162,7 @@ function handleSettingsReq(user_id, num_heroes, num_bans, starting_side,
 function handleReset(userId){
 	if(userId === state.radiantCaptain || userId === state.direCaptain){
 		resetState();
+		io.emit('reset', settings);
 	}
 }
 

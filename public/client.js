@@ -54,12 +54,12 @@ function getDraftString(){
 	
 	var str = "Radiant: ";
 	//Indexing needs to be like this for some reason
-	for (var i = 1; i < radiant.length; i++){
+	for (var i = 1; i < radiant.length; i+=2){
 		str = str + radiant[i].id + ", ";
     }
 	
 	str = str + "\nDire: "
-	for (var i = 1; i < dire.length; i++){
+	for (var i = 1; i < dire.length; i+=2){
 		str = str + dire[i].id + ", ";
     }
 	return str.replace(/,(?=[^,]*$)/, '');

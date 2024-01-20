@@ -17,11 +17,11 @@ let settings = structuredClone(defaultSettings);
 
 const initialState = {availableHeroes: undefined, timer: 'not_started', 
 	radiantCaptain: undefined, radiantCaptainName: undefined, direCaptain: undefined, 
-	direCaptainName: undefined, radiantPicks: [], radiantBans: [], direPicks: [],
-	direBans: []};
+	direCaptainName: undefined, radiantReserve: settings.radiantReserve, direReserve: settings.direReserve, 
+	radiantPicks: [], radiantBans: [], direPicks: [], direBans: []};
 let state = structuredClone(initialState);
 
-const gracePeriod = 2;
+const gracePeriod = 1;
 var timer;
 
 app.get('/', (req, res) => {
@@ -106,7 +106,14 @@ function handlePickEvent(user_id, hero_id){
 		return;
 	}
 	stopCurrentTimer()
+	const timeLeft = getTimeLeft(timer);
 	clearTimeout(timer);
+	if(state.timer === 'radiant_reserve'){
+		state.radiantReserve = timeLeft;
+	}
+	else if(state.timer === 'dire_reserve'){
+		state.direReserve = timeLeft;
+	}
 	processPick(hero_id);
 	if (!draftEnded()){
 		startNewTimer();
@@ -177,11 +184,11 @@ function timerExpiration(availableHeroes) {
 	
 	switch(state.timer){
 	case 'radiant_pick': 
-		if (settings.radiantReserve > 0){
+		if (state.radiantReserve > 0){
 			state.timer = "radiant_reserve";
 			io.emit('radiant_timer_stop');
-			io.emit('radiant_reserve_start', settings.radiantReserve);
-			timer = setTimeout(timerExpiration, (settings.radiantReserve+gracePeriod)*1000,
+			io.emit('radiant_reserve_start', state.radiantReserve);
+			timer = setTimeout(timerExpiration, (state.radiantReserve+gracePeriod)*1000,
 				availableHeroes);
 			return
 		}
@@ -190,11 +197,11 @@ function timerExpiration(availableHeroes) {
 		}
 		break;
 	case 'dire_pick':
-		if (settings.direReserve > 0){
+		if (state.direReserve > 0){
 			state.timer = "dire_reserve";
 			io.emit('dire_timer_stop');
-			io.emit('dire_reserve_start', settings.direReserve);
-			timer = setTimeout(timerExpiration, (settings.direReserve+gracePeriod)*1000,
+			io.emit('dire_reserve_start', state.direReserve);
+			timer = setTimeout(timerExpiration, (state.direReserve+gracePeriod)*1000,
 				availableHeroes);
 			return;
 		}
@@ -203,11 +210,11 @@ function timerExpiration(availableHeroes) {
 		}
 		break;
 	case 'radiant_reserve':
-		settings.radiantReserve = 0;
+		state.radiantReserve = 0;
 		fullTimeout();
 		break;
 	case 'dire_reserve':
-		settings.direReserve = 0;
+		state.direReserve = 0;
 		fullTimeout();
 		break;
 	case 'draft_ended':

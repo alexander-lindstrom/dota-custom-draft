@@ -385,7 +385,7 @@ function selectHeroesOfType(type, numPerType){
 	const path = 'public/assets/' + type + '.csv';
 	const csv = fs.readFileSync(path).toString().trim().replace(/\s+/g, '');
 	var arr = csv.split(',');
-	return getRandom(arr, numPerType)
+	return getRandom(arr, numPerType).sort()
 }
 
 function getRandom(arr, n) {

@@ -17,11 +17,11 @@ let settings = structuredClone(defaultSettings);
 
 const initialState = {availableHeroes: undefined, timer: 'not_started', 
 	radiantCaptain: undefined, radiantCaptainName: undefined, direCaptain: undefined, 
-	direCaptainName: undefined, radiantReserve: settings.radiantReserve, direReserve: settings.direReserve, 
+	direCaptainName: undefined, radiantReserve: undefined, direReserve: undefined, 
 	radiantPicks: [], radiantBans: [], direPicks: [], direBans: []};
 let state = structuredClone(initialState);
 
-const gracePeriod = 1;
+const gracePeriod = 2;
 var timer;
 
 app.get('/', (req, res) => {
@@ -50,6 +50,8 @@ io.on('connection', (socket) => {
 			return;
 		}
 		state.availableHeroes = selectHeroes(settings.heroesPerType);
+		state.radiantReserve = settings.radiantReserve;
+		state.direReserve = settings.direReserve;
 		order.turn = getTurnOrder(settings.startingFaction, settings.numBans);
 		order.phase = getPhaseOrder(settings.numBans);
 		io.emit('start', state.availableHeroes, order, settings);

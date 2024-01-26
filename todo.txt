@@ -1,3 +1,4 @@
 Issues:
 
 Future improvements:
+display all heroes, show unavailible heroes greyed out (add calls active or inactive to image)

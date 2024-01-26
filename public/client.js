@@ -114,6 +114,7 @@ function sendPickEvent(id){
 socket.on('start', function(heroes, order, settings){
 	setImages(heroes[0], heroes[1], heroes[2], heroes[3]);
 	currHLParent = getHLP(order, settings, 0);
+	setTimeline(order.turn, settings.numBans);
 });
 
 socket.on('reset', function(settings){
@@ -174,6 +175,7 @@ socket.on('settings_update', function(settings){
 
 socket.on('current_state', function(order, state, settings, timeLeft){
 	setupState(order, state, settings, timeLeft);
+	setTimeline(order.turn, settings.numBans);
 });
 
 socket.on('update_status', function(faction, phase){
@@ -242,7 +244,18 @@ function updateHighlightedHero(heroId){
 		parent.replaceChildren(newChild);
 	}
 }
-
+function setTimeline(myOrder, bans){
+	if(!myOrder){
+		return;
+	}
+	myOrder.forEach(function(side, i){
+		var elem = document.createElement("div");
+		var elemR = document.createElement("span");
+		elem.className = ((i+1) > (bans * 2 ) ? side : side + " ban_box");
+		elem.appendChild(elemR);
+		document.getElementById("timeline").appendChild(elem)
+	})
+}
 function setImages(strHeroes, agiHeroes, intHeroes, uniHeroes){
 	
 	strHeroes.forEach(function(e){

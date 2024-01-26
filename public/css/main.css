@@ -22,9 +22,15 @@ body {
 	min-width: 50%;
 }
 .visual_status {
+	padding: 15px ;
 	width: 400px;
 	min-width: 400px;
 	max-width: 400px;
+	border-radius: 10px;
+	border:1px solid grey;
+	background-color: black;
+	margin-bottom: 30px;
+	margin-right: 15px;
 }		
 .pick_info{
 
@@ -54,12 +60,16 @@ img{
 }
 
 .img_holder_ban {
-	border: 1px solid red;
+	border: 1px solid grey;
 	border-radius: 4px;
+	box-shadow: 0 0 10px rgba(0,0,0,0.3);
+	margin-bottom: 5px;
 }
 .img_holder_pick {
-	border: 1px solid green;
+	border: 1px solid grey;
 	border-radius: 4px;
+	box-shadow: 0 0 10px rgba(0,0,0,0.3);
+	margin-bottom: 5px;
 }
 .middle_col {
 
@@ -74,6 +84,14 @@ img{
 	text-align: right;
 	float:right;
 }
+#dire_ban {
+	text-align: right;
+	float:left;
+}
+#dire_pick {
+	text-align: right;
+	float:left;
+}
 #radiant_ban img, .img_holder_ban,#dire_ban img{
 	min-height:45px;
 	width:75px !important;
@@ -81,12 +99,7 @@ img{
 #radiant_ban img, #dire_ban img,#radiant_pick img, #dire_pick img{
 	display: block;
 }
-/*#radiant_ban img{
-	float:right;
-}
-#dire_ban img{
-	float:left;
-}*/
+
 .spacer {
 	clear:both;
 	padding-top: 25px;
@@ -99,18 +112,12 @@ img{
 }
 
 .radiant_info , .dire_info{
-	padding-top: 10px;
-	padding-bottom: 10px;
-	border :1px solid black;
-	border-top-left-radius: 10px;
-	border-top-right-radius: 10px;
-	border-bottom: none;
+	padding-top: 1px;
+	padding-bottom: 1px;
+	
 }
 .radiant_col, .dire_col {
-	border :1px solid black;
-	border-bottom-left-radius: 10px;
-	border-bottom-right-radius: 10px;
-	border-top: none;
+
 }
 .radiant_col .radiant_info,.dire_col .dire_info {
 	border: none;
@@ -165,19 +172,68 @@ img{
 }
 
 /*** timeline ***/
+#timeline span {
+	border: solid green;
+	border-width: 0 3px 3px 0;
+	display: inline-block;
+	padding: 3px;
+	margin-top: 10px;
+}
+#timeline .radiant span{
+	transform: rotate(135deg);
+	-webkit-transform: rotate(135deg);
+}
+#timeline .dire span{
+	border-color: red;
+	transform: rotate(-45deg);
+  -webkit-transform: rotate(-45deg);
+}
 .timeline_col {
+	padding-top: -2px;
 	position: relative;
 	width:30px;
 	max-width: 30px;
 }
+
+.radiant, .dire {
+	display:block;
+	height: 33px;
+	border-right: 2px solid green;
+}
+.ban_box {
+	height: 26px;
+}
+.dire {
+	border-right: 2px solid red;
+}
+#radiant_ban .radiant, #dire_ban .dire {
+	height: 20px;
+	display: block;
+}
+
+.radiant::after , .dire::after{
+	/*content: '';
+    position: absolute;
+    width: 1px;
+    background-color: #17e767;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    margin-left: -3px;*/
+}
+ .dire::after{
+
+    background-color: #f10b0b;
+
+}
 .timeline_col::after {
-	display:none;
-    content: '';
+	
+  /*  content: '';
     position: absolute;
     width: 3px;
     background-color: #bbb;
     top: 0;
     bottom: 0;
     left: 50%;
-    margin-left: -3px;
+    margin-left: -3px;*/
 }

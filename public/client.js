@@ -248,12 +248,13 @@ function setTimeline(myOrder, bans){
 	if(!myOrder){
 		return;
 	}
+	document.getElementById("timeline").innerHTML  = "";
 	myOrder.forEach(function(side, i){
 		var elem = document.createElement("div");
 		var elemR = document.createElement("span");
 		elem.className = ((i+1) > (bans * 2 ) ? side : side + " ban_box");
 		elem.appendChild(elemR);
-		document.getElementById("timeline").appendChild(elem)
+		document.getElementById("timeline").appendChild(elem);
 	})
 }
 function setImages(strHeroes, agiHeroes, intHeroes, uniHeroes){

@@ -23,7 +23,7 @@
 	</div>
 	<div class="spacer"></div>
 	<div class="row">
-		<div class="available col col-7" id="available_heroes">
+		<div class="available col" id="available_heroes">
 			<div class="row"><h4 id="available_heroes_header"></h4></div>
 			<div class="row">
 				<div class="col col-3" id="available_heroes_str">
@@ -40,7 +40,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="col col-5">
+		<div class="col visual_status">
 			<div class="row">
 				<div class="status">
 					<div class="col-lg-auto" >
@@ -49,9 +49,38 @@
 				</div>
 			</div>
 			<div class="row">
-				<div class="col col-6">
+				<div class=" col radiant_info">
+					<div class="col">
+						<div class="col-lg-auto">
+						<h6 id=radiant_captain>Captain: none</h6>
+						</div>
+						<div class="col-lg-auto">
+						<h6 id=radiant_reserve>Reserve:</h6>
+						</div>
+						<div class="col-lg-auto">
+						<h6 id=radiant_timer>Time:</h6>
+						</div>
+					</div>
+				</div>
+				<div class="col middle_col"></div>
+				<div class=" col dire_info">
+					<div class="col">
+						<div class="col-lg-auto">
+						<h6 id=dire_captain>Captain: none</h6>
+						</div>
+						<div class="col-lg-auto">
+						<h6 id=dire_reserve>Reserve:</h6>
+						</div>
+						<div class="col-lg-auto">
+						<h6 id=dire_timer>Time:</h6>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col radiand_col">
 					<div class="radiant_info">
-						<div class="row">
+						<!--<div class="row">
 							<div class="col-lg-auto">
 							<h6 id=radiant_captain>Captain: none</h6>
 							</div>
@@ -61,16 +90,17 @@
 							<div class="col-lg-auto">
 							<h6 id=radiant_timer>Time:</h6>
 							</div>
-						</div>
+						</div>-->
 						<div class="col pick_info  justify-content-end" id="radiant_ban">
 						</div>
 						<div class="col pick_info  justify-content-end" id="radiant_pick">
 						</div>
 					</div>
 				</div>
-				<div class="col col-6">
+				<div class="col timeline_col"></div>
+				<div class="col dire_col">
 					<div class="dire_info">
-						<div class="row">
+						<!--<div class="row">
 							<div class="col-lg-auto">
 							<h6 id=dire_captain>Captain: none</h6>
 							</div>
@@ -80,18 +110,18 @@
 							<div class="col-lg-auto">
 							<h6 id=dire_timer>Time:</h6>
 							</div>
-						</div>
+						</div>-->
 						<div class="col pick_info align-self-start" id="dire_ban">
 						</div>
 						<div class="col pick_info align-self-start" id="dire_pick">
 						</div>
 					</div>
 				</div>
-				<div class="row">
-					<div class="col">
-						<div class="selectButton">
-							<button type="button" class="btn btn-primary" id="select_hero_button">Select</button>
-						</div>
+			</div>
+			<div class="row">
+				<div class="col">
+					<div class="selectButton">
+						<button type="button" class="btn btn-primary" id="select_hero_button">SELECT</button>
 					</div>
 				</div>
 			</div>

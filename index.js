@@ -42,7 +42,6 @@ function sendState(userId){
 }
 
 io.on('connection', (socket) => {
-
 	sendState(socket.id);
 	socket.on('start', ()  => {
 		if(state.radiantCaptain === undefined || state.direCaptain === undefined 
@@ -169,6 +168,7 @@ function handleSettingsReq(user_id, num_heroes, num_bans, starting_side,
 
 
 function handleReset(userId){
+	console.log("reset");
 	if(userId === state.radiantCaptain || userId === state.direCaptain){
 		resetState();
 		io.emit('reset', settings);
@@ -278,6 +278,7 @@ function processPick(id){
 	const phase = order.phase[order.index];
 	const faction = order.turn[order.index];
 	
+	console.log("processpicks: "+ order)
 	updateHeroList(id);
 	updatePicks(id, faction, phase);
 	io.emit('pick', order, settings, id);

@@ -12,7 +12,7 @@ body {
 	font-family: sans-serif;
 	caret-color: transparent;
 	background: rgb(0,0,0);
-	background: linear-gradient(90deg, rgba(0,0,0,1) 0%, rgba(255,255,255,0.3981967787114846) 100%);
+	background: linear-gradient(90deg, rgb(24, 23, 23) 0%, rgba(255,255,255,0.3981967787114846) 100%);
 }
 .available{
 	width: auto;
@@ -121,7 +121,27 @@ img{
 	opacity: 0.5;
 }
 /*** buttons ***/
-#select_hero_button{
+#start, #become_captain, #settings {
+	background: rgb(0,0,0);
+	background: linear-gradient(90deg, rgb(56, 34, 34) 0%, rgba(26, 17, 17, 0.398) 50%); 
+	border:1px solid grey;
+	font-weight: bold;
+	letter-spacing: 2px;
+}
+#start:hover, #become_captain:hover, #settings:hover {
+	border:1px solid rgb(48, 47, 47);
+}
+#reset, #copy_draft {
+	background: rgb(0,0,0);
+	background: linear-gradient(90deg, rgba(39, 34, 56, 0.959) 0%, rgba(26, 17, 17, 0.398) 50%); 
+	border:1px solid grey;
+	font-weight: bold;
+	letter-spacing: 2px;
+}
+#reset:hover, #copy_draft:hover {
+	border:1px solid rgb(48, 47, 47);
+}
+#select_hero_button {
 	height : 50px;
 	width: 100%;
 	background: rgb(0,0,0);

@@ -467,6 +467,7 @@ function resetState(settings){
 	document.getElementById("dire_timer").innerHTML = "Time:";
 	document.getElementById("radiant_reserve").innerHTML = "Reserve:";
 	document.getElementById("dire_reserve").innerHTML = "Reserve:";
+	document.getElementById("timeline").innerHTML  = "";
 	updateSettingsModal(settings)
 	
 	initialState()

@@ -173,7 +173,7 @@ img{
 
 /*** timeline ***/
 #timeline span {
-	border: solid green;
+	border: solid rgb(46, 221, 30);
 	border-width: 0 3px 3px 0;
 	display: inline-block;
 	padding: 3px;
@@ -184,7 +184,7 @@ img{
 	-webkit-transform: rotate(135deg);
 }
 #timeline .dire span{
-	border-color: red;
+	border-color: rgb(236, 16, 16);
 	transform: rotate(-45deg);
   -webkit-transform: rotate(-45deg);
 }
@@ -198,13 +198,13 @@ img{
 .radiant, .dire {
 	display:block;
 	height: 33px;
-	border-right: 2px solid green;
+	border-right: 3px solid rgb(46, 221, 30);
 }
 .ban_box {
 	height: 26px;
 }
 .dire {
-	border-right: 2px solid red;
+	border-right: 3px solid rgb(236, 16, 16);
 }
 #radiant_ban .radiant, #dire_ban .dire {
 	height: 20px;

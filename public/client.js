@@ -115,6 +115,7 @@ socket.on('start', function(heroes, order, settings){
 	setImages(heroes[0], heroes[1], heroes[2], heroes[3]);
 	currHLParent = getHLP(order, settings, 0);
 	setTimeline(order.turn, settings.numBans);
+	setReserve(settings.radiantReserve, settings.direReserve);
 });
 
 socket.on('reset', function(settings){
@@ -171,11 +172,13 @@ socket.on('update_status', function(faction, phase){
 socket.on('settings_update', function(settings){
 	updateSettingsModal(settings);
 	updateBanPlaceholders(settings.numBans);
+	setReserve(settings.radiantReserve, settings.direReserve);
 });
 
 socket.on('current_state', function(order, state, settings, timeLeft){
 	setupState(order, state, settings, timeLeft);
 	setTimeline(order.turn, settings.numBans);
+	setReserve(settings.radiantReserve, settings.direReserve);
 });
 
 socket.on('update_status', function(faction, phase){
@@ -190,6 +193,12 @@ function pick(order, settings, heroId){
 	childElement.onclick = null;
 	document.getElementById(currHLParent).replaceChildren(childElement);
 	currHLParent = getHLP(order, settings, 1);
+}
+
+function setReserve(radiantReserve, direReserve){
+
+	document.getElementById("radiant_reserve").innerHTML = "Reserve: " + radiantReserve;
+	document.getElementById("dire_reserve").innerHTML = "Reserve: " + direReserve;
 }
 
 function getHLP(order, settings, increment){
